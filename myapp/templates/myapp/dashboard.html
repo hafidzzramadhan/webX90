@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      min-height: 100vh;
+    }
+
+    header {
+      position: relative;
+      background-color: transparent;
+      padding: 20px;
+    }
+
+    .nav-toggle {
+      font-size: 28px;
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 2;
+    }
+
+    nav {
+      background-color: black;
+      padding: 15px 20px;
+      border-radius: 30px;
+      transition: max-height 0.3s ease;
+      overflow: hidden;
+    }
+
+    nav.collapsed {
+      max-height: 0;
+      padding: 0;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 12px;
+    }
+
+    nav ul li a.active,
+    nav ul li a:hover {
+      background-color: #333;
+    }
+
+    .dashboard-container {
+      padding: 30px;
+    }
+
+    .card {
+      background-color: #f9f9f9;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .progress-ring {
+      width: 150px;
+      height: 150px;
+      background: conic-gradient(#f7a631 0% 75%, #ddd 75% 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    .progress-ring span {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-toggle" onclick="toggleNavbar()">☰</div>
+    <nav id="navbar">
+      <ul>
+        <li><a href="#" class="active">Dashboard</a></li>
+        <li><a href="#">Activity</a></li>
+        <li><a href="#">Catatan</a></li>
+        <li><a href="#">Transaksi</a></li>
+        <li><a href="#">Lingkungan</a></li>
+        <li><a href="#">Log</a></li>
+        <li><a href="#">Setting</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="card">
+      <h2>Progres Implementasi</h2>
+      <div class="progress-ring">
+        <span>75%</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <p><strong>Terakhir Pemeliharaan:</strong> 10 Agustus 2025</p>
+    </div>
+
+    <div class="card">
+      <p><strong>Jumlah Aktivitas Hari Ini:</strong> 0</p>
+      <p><strong>Status Implementasi:</strong> 
+        <span style="color:green;">● 6</span>
+        <span style="color:orange;">● 0</span>
+        <span style="color:red;">● 1</span>
+      </p>
+    </div>
+
+    <div class="card" style="background-color: #d8eef8;">
+      <p>🚀 Sistem mendekati target, hanya 1 aktivitas lagi!</p>
+    </div>
+  </div>
+
+  <script>
+    function toggleNavbar() {
+      const nav = document.getElementById("navbar");
+      nav.classList.toggle("collapsed");
+    }
+  </script>
+
+</body>
+</html>

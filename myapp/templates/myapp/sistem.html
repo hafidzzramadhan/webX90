@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistem Implementation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      position: relative;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      padding: 20px;
+    }
+
+    .content-box {
+      background-color: white;
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+      line-height: 1.8;
+    }
+
+    .content-box h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .content-box p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .content-box button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      background-color: black;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .svg-kanan-atas {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 400px;
+      z-index: 0;
+    }
+
+    .svg-kanan-bawah {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 400px;
+      z-index: 0;
+    }
+
+    .svg-kiri-atas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 400px;
+      z-index: 0;
+
+    }
+    .btn-start {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  text-decoration: none;
+  border-radius: 20px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.btn-start:hover {
+  background-color: #333;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <!-- SVG Dekorasi -->
+  <img src="{% static 'myapp/m1k.png' %}" class="svg-kiri-atas" alt="Kiri Atas">
+  <img src="{% static 'myapp/X91.png' %}" class="svg-kanan-atas" alt="Kanan Atas">
+  <img src="{% static 'myapp/X90.png' %}" class="svg-kanan-bawah" alt="Kanan Bawah">
+
+  <div class="container">
+    <div class="content-box">
+      <h1>Sistem<br>Implementation</h1>
+      <p><em>
+        Aplikasi ini digunakan untuk mengelola implementasi dan pemeliharaan perangkat lunak.
+        Adapun salah satu kemampuan aplikasi ini sebagai berikut:
+      </em></p>
+      <p><em>- Merekam aktivitas implementasi perangkat lunak</em></p>
+      <p><em>- Merekam data transaksi model baik fitur input maupun label output</em></p>
+
+      <a href="{% url 'login' %}" class="btn-start">Get started</a>
+    </div>
+  </div>
+
+</body>
+</html>
