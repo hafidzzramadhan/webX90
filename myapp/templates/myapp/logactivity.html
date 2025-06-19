@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Log Activity</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      padding-bottom: 100px;
+    }
+
+    .dekorasi-kanan {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 220px;
+      z-index: -1;
+      opacity: 0.9;
+    }
+
+    .navbar-wrapper {
+      position: sticky;
+      top: 0;
+      background-color: black;
+      border-bottom-left-radius: 50px;
+      border-bottom-right-radius: 50px;
+      width: fit-content;
+      max-width: 90%;
+      margin: 0 auto;
+      padding-top: 35px;
+      transition: all 0.4s ease;
+      z-index: 999;
+    }
+
+    .navbar-toggle {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: black;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+
+    nav {
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+
+    nav.collapsed { max-height: 0; opacity: 0; }
+    nav.expanded { max-height: 500px; opacity: 1; }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      gap: 20px;
+      padding: 15px 30px;
+      flex-wrap: wrap;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav ul li a.active,
+    nav ul li a:hover {
+      background-color: #333;
+    }
+
+    .log-container {
+      max-width: 600px;
+      margin: 100px auto 40px;
+      padding: 20px;
+    }
+
+    .log-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .log-card p {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<img src="{% static 'myapp/Group175.png' %}" class="dekorasi-kanan" alt="Dekor Kanan">
+
+<header class="navbar-wrapper">
+  <div class="navbar-toggle" onclick="toggleNavbar()">
+    <span id="toggle-icon">▼</span>
+  </div>
+  <nav id="navbar" class="collapsed">
+  <ul>
+    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'activity' %}">Activity</a></li>
+    <li><a href="{% url 'catatan' %}">Catatan</a></li>
+    <li><a href="{% url 'transaksi' %}">Transaksi</a></li>
+    <li><a href="{% url 'log' %}">Log</a></li>
+    <li><a href="{% url 'lingkungan' %}" class="{% if request.path == '/lingkungan/' %}active{% endif %}">Lingkungan</a></li>
+    <li><a href="#">Setting</a></li>
+  </ul>
+</nav>
+</header>
+
+<div class="log-container">
+  <h2>Log activity</h2>
+  <br>
+  {% for log in log_list %}
+  <div class="log-card">
+    <p><strong>Date</strong> : {{ log.date }}</p>
+    <p><strong>Activity</strong> : {{ log.activity }}</p>
+    <p><strong>Status</strong> : ✅ {{ log.status }}</p>
+    <p><strong>Person</strong> : {{ log.person }}</p>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  function toggleNavbar() {
+    const nav = document.getElementById("navbar");
+    const icon = document.getElementById("toggle-icon");
+    const isCollapsed = nav.classList.contains("collapsed");
+    nav.classList.toggle("collapsed", !isCollapsed);
+    nav.classList.toggle("expanded", isCollapsed);
+    icon.innerText = isCollapsed ? "▲" : "▼";
+  }
+</script>
+
+</body>
+</html>

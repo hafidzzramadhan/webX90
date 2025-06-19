@@ -3,5 +3,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('myapp.urls')),  # Halaman utama diarahkan ke login custom
+    path('', include('myapp.urls')),        # untuk web HTML
+    path('', include('myapp.api_urls')),    # untuk API REST
 ]

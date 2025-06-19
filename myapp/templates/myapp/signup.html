@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 40px 20px;
+    }
+    .dekorasi-kanan-atas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;  /* Ubah sesuai ukuran yang diinginkan */
+  z-index: -1;
+  opacity: 0.9;
+}
+
+
+
+
+
+    .dekorasi-bawah {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 280px;
+      z-index: -1;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 25px;
+    }
+
+    .form-box {
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-box label {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .form-box input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      font-size: 16px;
+    }
+
+    .signup-button {
+      margin-top: 30px;
+      background-color: #000;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 24px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .signup-button:hover {
+      background-color: #333;
+    }
+
+    .back-link {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .back-link a {
+      color: #000;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<img src="{% static 'myapp/Group174.png' %}" class="dekorasi-kanan-atas" alt="Dekorasi Kanan Atas">
+<img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-bawah" alt="dekor kanan bawah">
+
+
+  <h2>Buat Akun</h2>
+
+  <form method="POST" action="{% url 'signup' %}" class="form-box">
+    {% csrf_token %}
+    <div>
+      <label for="nama">Nama</label>
+      <input type="text" name="nama" required>
+    </div>
+    <div>
+      <label for="email">Email</label>
+      <input type="email" name="email" required>
+    </div>
+    <div>
+      <label for="password">Password</label>
+      <input type="password" name="password" required>
+    </div>
+    <button type="submit" class="signup-button">Sign up</button>
+  </form>
+
+  <div class="back-link">
+    Back to <a href="{% url 'login' %}">Sign in</a> ?
+  </div>
+
+</body>
+</html>

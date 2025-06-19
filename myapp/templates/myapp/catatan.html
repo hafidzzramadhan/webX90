@@ -3,27 +3,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
+  <title>Catatan Pemeliharaan</title>
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       font-family: Arial, sans-serif;
       background-color: #fff;
       min-height: 100vh;
-      position: relative;
       overflow-x: hidden;
+      position: relative;
     }
 
-    /* ==== Dekorasi bawah kiri-kanan ==== */
     .dekorasi-kiri, .dekorasi-kanan {
       position: fixed;
       bottom: 0;
-      width: 260px; /* ✅ Lebih besar dari sebelumnya */
+      width: 260px;
       z-index: -1;
       opacity: 0.9;
     }
@@ -36,7 +35,6 @@
       right: 0;
     }
 
-    /* ==== Navbar Wrapper ==== */
     .navbar-wrapper {
       position: relative;
       background-color: black;
@@ -45,14 +43,13 @@
       width: fit-content;
       max-width: 90%;
       margin: 0 auto;
-      padding-top: 35px; /* ✅ beri lebih ruang buat panah */
+      padding-top: 35px;
       transition: all 0.4s ease;
     }
 
-    /* ==== Tombol Panah ==== */
     .navbar-toggle {
       position: absolute;
-      top: -12px; /* ✅ sedikit lebih turun dari sebelumnya */
+      top: -12px;
       left: 50%;
       transform: translateX(-50%);
       background-color: black;
@@ -68,7 +65,6 @@
       z-index: 10;
     }
 
-    /* ==== Navbar ==== */
     nav {
       overflow: hidden;
       transition: all 0.4s ease;
@@ -107,48 +103,79 @@
       background-color: #333;
     }
 
-    /* ==== Konten Dashboard ==== */
-    .dashboard-container {
-      padding: 30px;
-    }
-
-    .card {
-      background-color: #f9f9f9;
+    .container {
+      max-width: 600px;
+      margin: 40px auto 20px;
       padding: 20px;
-      margin: 20px 0;
-      border-radius: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    .progress-ring {
-      width: 150px;
-      height: 150px;
-      background: conic-gradient(#f7a631 0% 75%, #ddd 75% 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
+    .scroll-area {
+      max-height: 75vh;
+      overflow-y: auto;
+      padding-right: 10px;
     }
 
-    .progress-ring span {
+    .note-card {
+      background: white;
+      border-radius: 25px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .note-card h3 {
+      font-size: 22px;
       font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .note-card p {
+      margin-bottom: 5px;
+      font-size: 16px;
+    }
+
+    .note-card .icon {
+      position: absolute;
+      right: 20px;
+      top: 30px;
+      font-size: 20px;
+    }
+
+    .add-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 25px;
+    }
+
+    .add-button button {
+      padding: 12px 25px;
+      font-size: 18px;
+      border: 2px solid #000;
+      background: transparent;
+      border-radius: 40px;
+      cursor: pointer;
+    }
+
+    .add-button button:hover {
+      background: #000;
+      color: white;
     }
   </style>
 </head>
 <body>
 
-  <!-- Dekorasi kiri dan kanan bawah -->
-  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekorasi kiri bawah">
-  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekorasi kanan bawah">
+  <!-- Dekorasi -->
+  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
 
   <!-- Navbar -->
   <header class="navbar-wrapper">
     <div class="navbar-toggle" onclick="toggleNavbar()">
       <span id="toggle-icon">▼</span>
     </div>
-
-    <nav id="navbar" class="collapsed">
+<nav id="navbar" class="collapsed">
   <ul>
     <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
     <li><a href="{% url 'activity' %}">Activity</a></li>
@@ -163,30 +190,21 @@
 
   </header>
 
-  <!-- Konten -->
-  <div class="dashboard-container">
-    <div class="card">
-      <h2>Progres Implementasi</h2>
-      <div class="progress-ring">
-        <span>75%</span>
+  <!-- Catatan -->
+  <div class="container">
+    <div class="scroll-area">
+      {% for catatan in catatan_list %}
+      <div class="note-card">
+        <h3>{{ catatan.tanggal|upper }}</h3>
+        <p>{{ catatan.judul }}<br>{{ catatan.deskripsi }}</p>
+        <p>Teknisi : {{ catatan.teknisi }}</p>
+        <div class="icon">👁️</div>
       </div>
+      {% endfor %}
     </div>
 
-    <div class="card">
-      <p><strong>Terakhir Pemeliharaan:</strong> 10 Agustus 2025</p>
-    </div>
-
-    <div class="card">
-      <p><strong>Jumlah Aktivitas Hari Ini:</strong> 0</p>
-      <p><strong>Status Implementasi:</strong> 
-        <span style="color:green;">● 6</span>
-        <span style="color:orange;">● 0</span>
-        <span style="color:red;">● 1</span>
-      </p>
-    </div>
-
-    <div class="card" style="background-color: #d8eef8;">
-      <p>🚀 Sistem mendekati target, hanya 1 aktivitas lagi!</p>
+    <div class="add-button">
+      <button>＋ Tambah Catatan</button>
     </div>
   </div>
 
@@ -195,10 +213,8 @@
       const nav = document.getElementById("navbar");
       const icon = document.getElementById("toggle-icon");
       const isCollapsed = nav.classList.contains("collapsed");
-
       nav.classList.toggle("collapsed", !isCollapsed);
       nav.classList.toggle("expanded", isCollapsed);
-
       icon.innerText = isCollapsed ? "▲" : "▼";
     }
   </script>

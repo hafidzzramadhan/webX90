@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
+  <title>Activity</title>
   <style>
     * {
       box-sizing: border-box;
@@ -19,11 +19,10 @@
       overflow-x: hidden;
     }
 
-    /* ==== Dekorasi bawah kiri-kanan ==== */
     .dekorasi-kiri, .dekorasi-kanan {
       position: fixed;
       bottom: 0;
-      width: 260px; /* ✅ Lebih besar dari sebelumnya */
+      width: 260px;
       z-index: -1;
       opacity: 0.9;
     }
@@ -36,7 +35,6 @@
       right: 0;
     }
 
-    /* ==== Navbar Wrapper ==== */
     .navbar-wrapper {
       position: relative;
       background-color: black;
@@ -45,14 +43,13 @@
       width: fit-content;
       max-width: 90%;
       margin: 0 auto;
-      padding-top: 35px; /* ✅ beri lebih ruang buat panah */
+      padding-top: 35px;
       transition: all 0.4s ease;
     }
 
-    /* ==== Tombol Panah ==== */
     .navbar-toggle {
       position: absolute;
-      top: -12px; /* ✅ sedikit lebih turun dari sebelumnya */
+      top: -12px;
       left: 50%;
       transform: translateX(-50%);
       background-color: black;
@@ -68,7 +65,6 @@
       z-index: 10;
     }
 
-    /* ==== Navbar ==== */
     nav {
       overflow: hidden;
       transition: all 0.4s ease;
@@ -105,49 +101,54 @@
     nav ul li a.active,
     nav ul li a:hover {
       background-color: #333;
+    } 
+    .activity-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  max-height: 70vh; /* batasi tinggi agar bisa scroll */
+  overflow-y: auto; /* aktifkan scroll vertikal */
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+    
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    /* ==== Konten Dashboard ==== */
-    .dashboard-container {
-      padding: 30px;
+    th, td {
+      padding: 12px 18px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
     }
 
-    .card {
-      background-color: #f9f9f9;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    th {
+      background-color: #f2f2f2;
     }
 
-    .progress-ring {
-      width: 150px;
-      height: 150px;
-      background: conic-gradient(#f7a631 0% 75%, #ddd 75% 100%);
+    .status-circle {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-    }
-
-    .progress-ring span {
-      font-weight: bold;
+      margin-left: 8px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Dekorasi kiri dan kanan bawah -->
-  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekorasi kiri bawah">
-  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekorasi kanan bawah">
+  <!-- Dekorasi -->
+  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
 
   <!-- Navbar -->
   <header class="navbar-wrapper">
     <div class="navbar-toggle" onclick="toggleNavbar()">
       <span id="toggle-icon">▼</span>
     </div>
-
     <nav id="navbar" class="collapsed">
   <ul>
     <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
@@ -159,35 +160,29 @@
     <li><a href="#">Setting</a></li>
   </ul>
 </nav>
-
-
   </header>
 
-  <!-- Konten -->
-  <div class="dashboard-container">
-    <div class="card">
-      <h2>Progres Implementasi</h2>
-      <div class="progress-ring">
-        <span>75%</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <p><strong>Terakhir Pemeliharaan:</strong> 10 Agustus 2025</p>
-    </div>
-
-    <div class="card">
-      <p><strong>Jumlah Aktivitas Hari Ini:</strong> 0</p>
-      <p><strong>Status Implementasi:</strong> 
-        <span style="color:green;">● 6</span>
-        <span style="color:orange;">● 0</span>
-        <span style="color:red;">● 1</span>
-      </p>
-    </div>
-
-    <div class="card" style="background-color: #d8eef8;">
-      <p>🚀 Sistem mendekati target, hanya 1 aktivitas lagi!</p>
-    </div>
+  <!-- Activity Table -->
+  <div class="activity-container">
+    <h2>Daftar Aktivitas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Nama Aktivitas</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in aktivitas %}
+        <tr>
+          <td>{{ a.tanggal }}</td>
+          <td>{{ a.nama_aktivitas }}</td>
+          <td>{{ a.status }} <span class="status-circle" style="background-color: {{ a.warna }};"></span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 
   <script>
@@ -195,10 +190,8 @@
       const nav = document.getElementById("navbar");
       const icon = document.getElementById("toggle-icon");
       const isCollapsed = nav.classList.contains("collapsed");
-
       nav.classList.toggle("collapsed", !isCollapsed);
       nav.classList.toggle("expanded", isCollapsed);
-
       icon.innerText = isCollapsed ? "▲" : "▼";
     }
   </script>
