@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Aktivitas, Catatan, Transaksi, LogAktivitas, Lingkungan
+from .models import Aktivitas, Catatan, Transaksi, LogAktivitas, Lingkungan,SystemImplementation
 
 class AktivitasSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,4 +24,10 @@ class LogAktivitasSerializer(serializers.ModelSerializer):
 class LingkunganSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lingkungan
+        fields = '__all__'
+
+
+class SystemImplementationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SystemImplementation
         fields = '__all__'

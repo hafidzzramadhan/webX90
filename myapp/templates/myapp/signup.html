@@ -5,130 +5,129 @@
   <meta charset="UTF-8">
   <title>Sign Up</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
       font-family: Arial, sans-serif;
       background-color: #fff;
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
       display: flex;
-      justify-content: center;
-      align-items: center;
       flex-direction: column;
-      padding: 40px 20px;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
     }
-    .dekorasi-kanan-atas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 300px;  /* Ubah sesuai ukuran yang diinginkan */
-  z-index: -1;
-  opacity: 0.9;
-}
 
+    .form-container {
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      z-index: 1;
+    }
 
+    h2 {
+      margin-bottom: 20px;
+    }
 
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
+    label {
+      font-size: 14px;
+      text-align: left;
+    }
 
-    .dekorasi-bawah {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    button {
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .link {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .link a {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+    }
+
+    .dekorasi-atas-kiri {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 250px;
+      z-index: 0;
+    }
+
+    .dekorasi-bawah-kanan {
       position: absolute;
       bottom: 0;
       right: 0;
       width: 280px;
-      z-index: -1;
-    }
-
-    h2 {
-      font-size: 28px;
-      margin-bottom: 25px;
-    }
-
-    .form-box {
-      width: 100%;
-      max-width: 400px;
-      background: #fff;
-      border-radius: 24px;
-      padding: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .form-box label {
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
-
-    .form-box input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #333;
-      font-size: 16px;
-    }
-
-    .signup-button {
-      margin-top: 30px;
-      background-color: #000;
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 24px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .signup-button:hover {
-      background-color: #333;
-    }
-
-    .back-link {
-      margin-top: 16px;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    .back-link a {
-      color: #000;
-      text-decoration: underline;
+      z-index: 0;
     }
   </style>
 </head>
 <body>
 
-<img src="{% static 'myapp/Group174.png' %}" class="dekorasi-kanan-atas" alt="Dekorasi Kanan Atas">
-<img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-bawah" alt="dekor kanan bawah">
+  <!-- Dekorasi -->
+  <img src="{% static 'myapp/Group174.png' %}" alt="dekorasi atas kiri" class="dekorasi-atas-kiri">
+  <img src="{% static 'myapp/dekorkanan.png' %}" alt="dekorasi bawah kanan" class="dekorasi-bawah-kanan">
 
+  <div class="form-container">
+    <h2>Buat Akun</h2>
 
-  <h2>Buat Akun</h2>
+    {% if error %}
+      <p class="error-message">{{ error }}</p>
+    {% endif %}
 
-  <form method="POST" action="{% url 'signup' %}" class="form-box">
-    {% csrf_token %}
-    <div>
-      <label for="nama">Nama</label>
-      <input type="text" name="nama" required>
-    </div>
-    <div>
+    <form method="POST" action="{% url 'signup' %}">
+      {% csrf_token %}
+      <label for="username">Username</label>
+      <input type="text" name="username" required>
+
       <label for="email">Email</label>
       <input type="email" name="email" required>
-    </div>
-    <div>
+
       <label for="password">Password</label>
       <input type="password" name="password" required>
-    </div>
-    <button type="submit" class="signup-button">Sign up</button>
-  </form>
 
-  <div class="back-link">
-    Back to <a href="{% url 'login' %}">Sign in</a> ?
+      <label for="confirm_password">Konfirmasi Password</label>
+      <input type="password" name="confirm_password" required>
+
+      <button type="submit">Sign up</button>
+    </form>
+
+    <div class="link">
+      Back to <a href="{% url 'login' %}">Sign in</a>?
+    </div>
   </div>
 
 </body>

@@ -29,9 +29,13 @@ class LogAktivitas(models.Model):
     tanggal = models.DateField()
     aktivitas = models.CharField(max_length=255)
     status = models.CharField(max_length=50)
+    no = models.CharField(max_length=20, null=True, blank=True)
+    dokumentasi = models.URLField(null=True, blank=True)
+    laporan = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.aktivitas} - {self.status}"
+
 
 class Lingkungan(models.Model):
     nama = models.CharField(max_length=100)
@@ -40,3 +44,19 @@ class Lingkungan(models.Model):
 
     def __str__(self):
         return self.nama
+
+class SystemImplementation(models.Model):
+    no = models.IntegerField()
+    nama_model = models.CharField(max_length=100, default="default_model")
+    status_project = models.CharField(max_length=50)
+    
+    # Dulu: final_model = models.CharField(max_length=100)
+    dokumentasi_model = models.URLField(help_text="Link ke Google Colab")
+
+    # Dulu: dokumentasi_link = models.URLField()
+    laporan_model = models.FileField(upload_to='laporan/', null=True, blank=True, help_text="Upload PDF laporan model")
+
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def _str_(self):
+        return f"{self.nama_model} - {self.status_project}"

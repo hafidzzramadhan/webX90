@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aktivitas Detail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .form-wrapper {
+      background-color: white;
+      border-radius: 30px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 10px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      color: white;
+    }
+
+    .btn-simpan {
+      background-color: black;
+    }
+
+    .btn-delete {
+      background-color: red;
+    }
+
+    .dekorasi-kanan-bawah {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 200px;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+
+  <form method="POST" class="form-wrapper">
+    {% csrf_token %}
+    <h1>Aktivitas</h1>
+
+    <label>Nama Aktivitas</label>
+    <input type="text" name="nama_aktivitas" value="{{ aktivitas.nama_aktivitas }}">
+
+    <label>Deskripsi Aktivitas</label>
+    <textarea name="deskripsi">{{ aktivitas.deskripsi }}</textarea>
+
+    <label>Tanggal Pelaksanaan</label>
+    <input type="date" name="tanggal" value="{{ aktivitas.tanggal|date:'Y-m-d' }}">
+
+    <label>Status</label>
+    <select name="status">
+      <option value="Selesai" {% if aktivitas.status == "Selesai" %}selected{% endif %}>Selesai</option>
+      <option value="Dalam Proses" {% if aktivitas.status == "Dalam Proses" %}selected{% endif %}>Dalam Proses</option>
+      <option value="Tertunda" {% if aktivitas.status == "Tertunda" %}selected{% endif %}>Tertunda</option>
+    </select>
+
+    <div class="button-row">
+      <button type="submit" class="btn-simpan">Simpan</button>
+      <a href="{% url 'hapus_aktivitas_detail' aktivitas.id %}">
+        <button type="button" class="btn-delete">Delete</button>
+      </a>
+    </div>
+  </form>
+
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan-bawah" alt="Dekor kanan bawah">
+</body>
+</html>

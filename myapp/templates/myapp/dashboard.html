@@ -151,10 +151,10 @@
     <nav id="navbar" class="collapsed">
   <ul>
     <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'log' %}">Log</a></li>
     <li><a href="{% url 'activity' %}">Activity</a></li>
     <li><a href="{% url 'catatan' %}">Catatan</a></li>
     <li><a href="{% url 'transaksi' %}">Transaksi</a></li>
-    <li><a href="{% url 'log' %}">Log</a></li>
     <li><a href="{% url 'lingkungan' %}" class="{% if request.path == '/lingkungan/' %}active{% endif %}">Lingkungan</a></li>
     <li><a href="#">Setting</a></li>
   </ul>

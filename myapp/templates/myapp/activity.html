@@ -102,17 +102,16 @@
     nav ul li a:hover {
       background-color: #333;
     } 
-    .activity-container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-  max-height: 70vh; /* batasi tinggi agar bisa scroll */
-  overflow-y: auto; /* aktifkan scroll vertikal */
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
 
-    
+    .activity-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      max-height: 70vh;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      border-radius: 10px;
+    }
 
     table {
       width: 100%;
@@ -136,6 +135,11 @@
       border-radius: 50%;
       margin-left: 8px;
     }
+
+    tr:hover {
+      background-color: #f9f9f9;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -152,10 +156,10 @@
     <nav id="navbar" class="collapsed">
   <ul>
     <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li><a href="{% url 'log' %}">Log</a></li>
     <li><a href="{% url 'activity' %}">Activity</a></li>
     <li><a href="{% url 'catatan' %}">Catatan</a></li>
     <li><a href="{% url 'transaksi' %}">Transaksi</a></li>
-    <li><a href="{% url 'log' %}">Log</a></li>
     <li><a href="{% url 'lingkungan' %}" class="{% if request.path == '/lingkungan/' %}active{% endif %}">Lingkungan</a></li>
     <li><a href="#">Setting</a></li>
   </ul>
@@ -175,7 +179,7 @@
       </thead>
       <tbody>
         {% for a in aktivitas %}
-        <tr>
+        <tr onclick="location.href='{% url 'activity_detail' a.id %}'">
           <td>{{ a.tanggal }}</td>
           <td>{{ a.nama_aktivitas }}</td>
           <td>{{ a.status }} <span class="status-circle" style="background-color: {{ a.warna }};"></span></td>

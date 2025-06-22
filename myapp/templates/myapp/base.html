@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}My App{% endblock %}</title>
+  {% load static %}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f7f7f7;
+      text-align: center;
+    }
+
+    .form-box {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input[type=email], input[type=text], input[type=password] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: black;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+
+      .form-box {
+  max-width: 400px;
+  margin: 150px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.dekorasi-kiri-atas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 180px;
+  z-index: 1;
+}
+
+.dekorasi-kanan-bawah {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 220px;
+  z-index: 1;
+}
+
+button {
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+    }
+  </style>
+</head>
+<body>
+  {% block content %}
+  {% endblock %}
+</body>
+</html>
