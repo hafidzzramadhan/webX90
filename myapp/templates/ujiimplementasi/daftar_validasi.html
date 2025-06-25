@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Log Aktivitas Model</title>
+  <title>Model Tervalidasi</title>
   <style>
     * {
       box-sizing: border-box;
@@ -153,75 +153,41 @@
     <nav id="navbar" class="collapsed">
       <ul>
         <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-        <li><a href="{% url 'log' %}" class="active">Log</a></li>
+        <li><a href="{% url 'log' %}">Log</a></li>
         <li><a href="{% url 'activity' %}">Activity</a></li>
         <li><a href="{% url 'catatan' %}">Catatan</a></li>
         <li><a href="{% url 'transaksi' %}">Transaksi</a></li>
         <li><a href="{% url 'lingkungan' %}">Lingkungan</a></li>
-        <li><a href="{% url 'daftar_model_tervalidasi' %}">Uji Implementasi</a></li>
+        <li><a href="{% url 'daftar_model_tervalidasi' %}" class="active">Uji Implementasi</a></li>
         <li><a href="#">Setting</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Log Table -->
+  <!-- Konten -->
   <div class="log-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-      <h2>Log Aktivitas Model</h2>
-      <a href="{% url 'submit_model_form' %}" style="
-        background-color: #007bff;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;">
-        + Tambah Model Baru
-      </a>
-    </div>
+    <h2 style="margin-bottom: 15px;">Daftar Model yang Telah Divalidasi</h2>
+    <p>Total model tervalidasi: <strong>{{ data_list|length }}</strong></p>
 
     <table>
       <thead>
         <tr>
           <th>Nama Model</th>
-          <th>Status Project</th>
-          <th>Dokumentasi Model</th>
-          <th>Laporan Model</th>
-          <th>Timestamp</th>
-          <th>Aksi</th>
+          <th>Validator</th>
+          <th>Status Validasi</th>
+          <th>Tanggal</th>
         </tr>
       </thead>
       <tbody>
         {% for item in data_list %}
         <tr>
-          <td>{{ item.nama_model }}</td>
-          <td>{{ item.status_project }}</td>
-          <td>
-            {% if item.dokumentasi_model %}
-              <a href="{{ item.dokumentasi_model }}" target="_blank">Lihat</a>
-            {% else %}
-              Tidak ada
-            {% endif %}
-          </td>
-          <td>
-            {% if item.laporan_model %}
-              <a href="{{ item.laporan_model.url }}" target="_blank">Lihat PDF</a>
-            {% else %}
-              Tidak ada
-            {% endif %}
-          </td>
-          <td>{{ item.timestamp|date:"Y-m-d H:i" }}</td>
-          <td>
-            <a href="{% url 'validasi_model' item.id %}" style="
-              background-color: #28a745;
-              color: white;
-              padding: 6px 12px;
-              border-radius: 5px;
-              text-decoration: none;
-              font-size: 13px;">
-              Validasi
-            </a>
-          </td>
+          <td>{{ item.model_terkait.nama_model }}</td>
+          <td>{{ item.validator }}</td>
+          <td>{{ item.status_validasi }}</td>
+          <td>{{ item.tanggal_validasi|date:"Y-m-d H:i" }}</td>
         </tr>
+        {% empty %}
+        <tr><td colspan="4">Belum ada data validasi.</td></tr>
         {% endfor %}
       </tbody>
     </table>

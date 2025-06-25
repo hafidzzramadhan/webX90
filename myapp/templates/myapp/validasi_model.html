@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Validasi Model</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .form-container {
+      max-width: 480px;
+      width: 90%;
+      padding: 30px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .dekor-kiri-atas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20vw;
+      z-index: 0;
+    }
+
+    .dekor-kanan-bawah {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 25vw;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dekorasi -->
+  <img src="{% static 'myapp/m1k.png' %}" class="dekor-kiri-atas" alt="Dekor Kiri Atas">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekor-kanan-bawah" alt="Dekor Kanan Bawah">
+
+  <div class="form-container">
+    <h2>Validasi Model</h2>
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Simpan Validasi</button>
+    </form>
+  </div>
+
+</body>
+</html>

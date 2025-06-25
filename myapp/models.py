@@ -60,3 +60,13 @@ class SystemImplementation(models.Model):
 
     def _str_(self):
         return f"{self.nama_model} - {self.status_project}"
+    
+class ValidasiModel(models.Model):
+    model_terkait = models.ForeignKey(SystemImplementation, on_delete=models.CASCADE)
+    validator = models.CharField(max_length=100)
+    catatan = models.TextField(blank=True, null=True)
+    status_validasi = models.CharField(max_length=50, choices=[("Valid", "Valid"), ("Perlu Revisi", "Perlu Revisi")])
+    tanggal_validasi = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Validasi untuk {self.model_terkait.nama_model} oleh {self.validator}"

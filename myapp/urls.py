@@ -9,7 +9,7 @@ from .views import (
     activity_view, transaksi_view, signup_view,
     logactivity_view, catatan_view, lingkungan_view,
     hapus_aktivitas_detail, transaksi_detail_view,
-    terima_model_api
+    terima_model_api,validasi_model,daftar_model_tervalidasi
 )
 
 urlpatterns = [
@@ -49,4 +49,9 @@ urlpatterns = [
         template_name='myapp/custom_password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='myapp/custom_password_reset_complete.html'), name='password_reset_complete'),
+    path('validasi/<int:id>/', validasi_model, name='validasi_model'),
+    path('ujiimplementasi/', daftar_model_tervalidasi, name='daftar_model_tervalidasi'),
+    
+
+
 ]

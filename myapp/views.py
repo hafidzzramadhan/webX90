@@ -17,6 +17,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import (
     Aktivitas, Catatan, Transaksi, LogAktivitas, Lingkungan, SystemImplementation
 )
+from .models import ValidasiModel
+from .forms import ValidasiModelForm
 from .forms import SignUpForm
 from .serializers import (
     AktivitasSerializer, CatatanSerializer, TransaksiSerializer,
@@ -223,3 +225,25 @@ def hapus_aktivitas_detail(request, pk):
 def transaksi_detail_view(request, pk):
     transaksi = get_object_or_404(Transaksi, pk=pk)
     return render(request, 'myapp/transaksi_detail.html', {'transaksi': transaksi})
+
+
+
+def validasi_model(request, id):
+    model_instance = SystemImplementation.objects.get(id=id)
+    
+    if request.method == 'POST':
+        form = ValidasiModelForm(request.POST)
+        if form.is_valid():
+            validasi = form.save(commit=False)
+            validasi.model_terkait = model_instance
+            validasi.save()
+            return redirect('log')
+    else:
+        form = ValidasiModelForm()
+
+    return render(request, 'validasi_model.html', {'form': form})
+
+
+def daftar_model_tervalidasi(request):
+    data_list = ValidasiModel.objects.filter(status_validasi="Valid").order_by('-tanggal_validasi')
+    return render(request, 'ujiimplementasi/daftar_validasi.html', {'data_list': data_list})
