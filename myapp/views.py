@@ -1,30 +1,53 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, JsonResponse
-import requests, json, traceback
 from datetime import date
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
+from .models import SystemImplementation
+from django.shortcuts import redirect
+from .models import TransaksiModel
+import requests 
 
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
 
 from .models import (
-    Aktivitas, Catatan, Transaksi, LogAktivitas, Lingkungan, SystemImplementation
+    Aktivitas, Transaksi, LogAktivitas, Lingkungan,
+    SystemImplementation, ValidasiModel, HasilUjiModel,Catatan
 )
-from .models import ValidasiModel
-from .forms import ValidasiModelForm
-from .forms import SignUpForm
+from .forms import ValidasiModelForm, SignUpForm
 from .serializers import (
     AktivitasSerializer, CatatanSerializer, TransaksiSerializer,
     LogAktivitasSerializer, LingkunganSerializer, SystemImplementationSerializer
 )
 
+from django.views.decorators.csrf import csrf_exempt
+
+
+
+@csrf_exempt
+def catatan_pemeliharaan_view(request):
+    if request.method == 'POST':
+        judul = request.POST.get('judul')
+        deskripsi = request.POST.get('deskripsi')
+        teknisi = request.POST.get('teknisi')
+
+        Catatan.objects.create(
+            judul=judul,
+            deskripsi=deskripsi,
+            teknisi=teknisi
+        )
+        return redirect('catatan')
+
+    daftar_catatan = Catatan.objects.all().order_by('-tanggal')
+    return render(request, 'myapp/catatan.html', {'daftar_catatan': daftar_catatan})
 # Auth Views
 
 def login_view(request):
@@ -39,6 +62,14 @@ def login_view(request):
                 return redirect('dashboard')
         return render(request, 'myapp/login.html', {'error': 'Login gagal. Cek kembali username/email dan password.'})
     return render(request, 'myapp/login.html')
+
+
+def ringkasan_hasil_uji(request):
+    from .models import HasilUjiModel
+    hasil_list = HasilUjiModel.objects.all().order_by('-tanggal_uji')
+    return render(request, 'myapp/ringkasan_uji.html', {'hasil_list': hasil_list})
+
+
 
 def signup_view(request):
     if request.method == 'POST':
@@ -62,7 +93,15 @@ def logout_view(request):
 # Static Views
 
 def dashboard_view(request):
-    return render(request, 'myapp/dashboard.html')
+    total_model = SystemImplementation.objects.count()
+    total_validasi = ValidasiModel.objects.count()
+    aktivitas_terakhir = LogAktivitas.objects.order_by('-tanggal')[:5]
+    return render(request, 'myapp/dashboard.html', {
+        'total_model': total_model,
+        'total_validasi': total_validasi,
+        'aktivitas_terakhir': aktivitas_terakhir
+    })
+
 
 def sistem_view(request):
     return render(request, 'myapp/sistem.html')
@@ -71,17 +110,18 @@ def activity_view(request):
     aktivitas = Aktivitas.objects.all()
     return render(request, 'myapp/activity.html', {"aktivitas": aktivitas})
 
-def catatan_view(request):
-    catatan_list = Catatan.objects.all()
-    return render(request, 'myapp/catatan.html', {'catatan_list': catatan_list})
+def daftar_catatan(request):
+    catatan = Catatan.objects.all()
+    return render(request, 'myapp/catatan.html', {'catatan': catatan})
 
-def transaksi_view(request):
-    transaksi_list = Transaksi.objects.all()
-    return render(request, 'myapp/transaksi.html', {'transaksi_list': transaksi_list})
+
+def transaksi_model_view(request):
+    transaksi = TransaksiModel.objects.all()
+    return render(request, 'myapp/transaksi_model.html', {'transaksi': transaksi})
 
 def lingkungan_view(request):
-    lingkungan_list = Lingkungan.objects.all()
-    return render(request, 'myapp/lingkungan.html', {'lingkungan_list': lingkungan_list})
+    lingkungan = Lingkungan.objects.all()
+    return render(request, 'myapp/lingkungan.html', {'lingkungan': lingkungan})
 
 def logactivity_view(request):
 
@@ -152,6 +192,70 @@ def terima_model_api(request):
 def laporan_integrasi_view(request):
     data = SystemImplementation.objects.all().order_by('-timestamp')
     return render(request, 'myapp/logactivity.html', {'data_list': data})
+
+@csrf_exempt
+def uji_model(request, id):
+    validasi = get_object_or_404(ValidasiModel, id=id)
+
+    if request.method == 'POST':
+        hasil = request.POST.get('hasil_perhitungan')
+        rekomendasi = request.POST.get('rekomendasi')
+        kirim = 'kirim_ke_pm' in request.POST
+
+        # Simpan hasil uji lokal
+        hasil_uji = HasilUjiModel.objects.create(
+            model_terkait=validasi,
+            hasil_perhitungan=hasil,
+            rekomendasi=rekomendasi,
+            kirim_ke_pm=kirim
+        )
+
+        if kirim:
+            # Kirim ke modul PM
+            data = {
+                'nama_kelompok': validasi.model_terkait.nama_model,
+                'deskripsi': rekomendasi,
+                'status': 'Selesai'
+            }
+
+            try:
+                response = requests.post('http://10.24.84.9:8000/api/terimamodel/', data=data)
+                print("[✅] Berhasil kirim ke PM:", response.text)
+            except Exception as e:
+                print("[❌] Gagal kirim ke PM:", e)
+
+        return redirect('daftar_model_tervalidasi')
+
+    return render(request, 'myapp/form_uji_model.html', {'validasi': validasi})
+
+
+#def uji_model(request, id):
+    validasi = get_object_or_404(ValidasiModel, id=id)
+
+    if request.method == 'POST':
+        hasil = request.POST.get('hasil_perhitungan')
+        rekomendasi = request.POST.get('rekomendasi')
+        kirim = 'kirim_ke_pm' in request.POST
+
+        HasilUjiModel.objects.create(
+            model_terkait=validasi,
+            hasil_perhitungan=hasil,
+            rekomendasi=rekomendasi,
+            kirim_ke_pm=kirim
+        )
+
+        if kirim:
+            # Simulasi kirim ke modul Project Management
+            print(f"[INFO] Hasil uji model '{validasi.model_terkait.nama_model}' dikirim ke modul Project Management.")
+
+        return redirect('daftar_model_tervalidasi')
+
+    return render(request, 'myapp/form_uji_model.html', {'validasi': validasi})
+
+def daftar_hasil_uji(request):
+    hasil_list = HasilUjiModel.objects.all().order_by('-tanggal_uji')
+    return render(request, 'ujiimplementasi/daftar_hasil_uji.html', {'hasil_list': hasil_list})
+
 
 # API ViewSets
 class AktivitasViewSet(viewsets.ModelViewSet):
@@ -241,9 +345,62 @@ def validasi_model(request, id):
     else:
         form = ValidasiModelForm()
 
-    return render(request, 'validasi_model.html', {'form': form})
+    return render(request, 'myapp/validasi_model.html', {'form': form})
 
 
 def daftar_model_tervalidasi(request):
     data_list = ValidasiModel.objects.filter(status_validasi="Valid").order_by('-tanggal_validasi')
     return render(request, 'ujiimplementasi/daftar_validasi.html', {'data_list': data_list})
+
+def riwayat_uji_view(request):
+    hasil_list = HasilUjiModel.objects.select_related('model_terkait', 'model_terkait__model_terkait').order_by('-tanggal_uji')
+    return render(request, 'myapp/riwayat_uji.html', {'hasil_list': hasil_list})
+
+
+#ke RIDHO
+@csrf_exempt
+def simpan_hasil_uji(request, model_id):
+    if request.method == 'POST':
+        model = SystemImplementation.objects.get(id=model_id)
+        hasil = request.POST.get('hasil_perhitungan')
+        rekomendasi = request.POST.get('rekomendasi')
+        kirim_pm = request.POST.get('kirim_pm')  # checkbox
+        
+        model.hasil_perhitungan = hasil
+        model.rekomendasi = rekomendasi
+        model.status_project = "Tervalidasi"
+        model.save()
+
+        if kirim_pm:
+            payload = {
+                "nama": model.nama_model,
+                "deskripsi": rekomendasi,
+                "mulai": "2025-07-01",  # sementara (bisa pakai tanggal hari ini juga)
+                "selesai": "2025-12-31",  # sementara
+                "penanggungjawab": "Sistem Implementasi",
+                "jumlah": 1,
+                "pendanaan": 0,
+                "aktivitas1": "Validasi Model",
+                "aktivitas2": "Uji Model",
+                "aktivitas3": "Integrasi PM"
+            }
+
+            try:
+                url_pm = "http://10.24.84.9:8000/api/terima_model/"  # Ganti ke endpoint aslinya
+                response = requests.post(url_pm, json=payload)
+                status = 'terkirim' if response.status_code == 201 else 'gagal'
+                keterangan = response.text
+            except Exception as e:
+                status = 'gagal'
+                keterangan = str(e)
+
+            # Catat transaksi
+            TransaksiModel.objects.create(
+                model_terkait=model,
+                input_terkirim=model.input_model,
+                output_terkirim=model.output_model,
+                status_pengiriman=status,
+                keterangan=keterangan
+            )
+
+        return redirect('daftar_model_tervalidasi')

@@ -3,9 +3,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lingkungan Sistem</title>
+  <title>Riwayat Uji Model</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #fff;
@@ -22,8 +27,13 @@
       opacity: 0.9;
     }
 
-    .dekorasi-kiri { left: 0; }
-    .dekorasi-kanan { right: 0; }
+    .dekorasi-kiri {
+      left: 0;
+    }
+
+    .dekorasi-kanan {
+      right: 0;
+    }
 
     .navbar-wrapper {
       position: relative;
@@ -34,6 +44,7 @@
       max-width: 90%;
       margin: 0 auto;
       padding-top: 35px;
+      transition: all 0.4s ease;
     }
 
     .navbar-toggle {
@@ -50,6 +61,8 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 10;
     }
 
     nav {
@@ -57,8 +70,15 @@
       transition: all 0.4s ease;
     }
 
-    nav.collapsed { max-height: 0; opacity: 0; }
-    nav.expanded { max-height: 500px; opacity: 1; }
+    nav.collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    nav.expanded {
+      max-height: 500px;
+      opacity: 1;
+    }
 
     nav ul {
       display: flex;
@@ -75,6 +95,7 @@
       font-weight: 500;
       padding: 8px 14px;
       border-radius: 10px;
+      transition: background-color 0.3s ease;
     }
 
     nav ul li a.active,
@@ -82,37 +103,50 @@
       background-color: #333;
     }
 
-    .lingkungan-container {
-      padding: 30px;
-    }
-
-    .card {
-      background-color: #f0f9ff;
+    .log-container {
+      max-width: 1100px;
+      margin: 40px auto;
       padding: 20px;
-      margin: 20px 0;
-      border-radius: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-height: 70vh;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      background-color: #fafafa;
     }
 
-    .card h3 {
-      margin-bottom: 8px;
-      font-size: 20px;
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
     }
 
-    .card p {
-      margin: 6px 0;
+    table {
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    .label {
-      font-weight: bold;
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
     }
   </style>
 </head>
 <body>
 
+  <!-- Dekorasi -->
   <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
   <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
 
+  <!-- Navbar -->
   <header class="navbar-wrapper">
     <div class="navbar-toggle" onclick="toggleNavbar()">
       <span id="toggle-icon">▼</span>
@@ -120,38 +154,62 @@
     <nav id="navbar" class="collapsed">
       <ul>
         <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-        <li><a href="{% url 'log' %}">Log</a></li>
+        <li><a href="{% url 'log' %}" class="active">Log</a></li>
         <li><a href="{% url 'activity' %}">Activity</a></li>
         <li><a href="{% url 'catatan' %}">Catatan</a></li>
         <li><a href="{% url 'transaksi_model' %}">Transaksi</a></li>
-        <li><a href="{% url 'lingkungan' %}" class="active">Lingkungan</a></li>
+        <li><a href="{% url 'lingkungan' %}">Lingkungan</a></li>
         <li><a href="{% url 'daftar_model_tervalidasi' %}">Uji Implementasi</a></li>
         <li><a href="{% url 'riwayat_uji' %}">📋 Riwayat Uji</a></li>
+
+        <li><a href="#">Setting</a></li>
       </ul>
     </nav>
   </header>
 
-  <div class="lingkungan-container">
-    <h2>🖥️ Informasi Lingkungan Sistem</h2>
-    {% for env in lingkungan_list %}
-      <div class="card">
-        <h3>{{ env.nama }}</h3>
-        <p><span class="label">Deskripsi:</span> {{ env.deskripsi }}</p>
-        <p><span class="label">Tanggal Diperbarui:</span> {{ env.tanggal_diperbarui }}</p>
-      </div>
-    {% empty %}
-      <p>Belum ada data lingkungan sistem yang tersedia.</p>
-    {% endfor %}
+  <!-- Tabel Riwayat -->
+  <div class="log-container">
+    <h2>Riwayat Pengujian Model</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Model</th>
+          <th>Validator</th>
+          <th>Hasil Perhitungan</th>
+          <th>Rekomendasi</th>
+          <th>Kirim ke PM</th>
+          <th>Tanggal Uji</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for hasil in hasil_list %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ hasil.model_terkait.model_terkait.nama_model }}</td>
+          <td>{{ hasil.model_terkait.validator }}</td>
+          <td>{{ hasil.hasil_perhitungan }}</td>
+          <td>{{ hasil.rekomendasi }}</td>
+          <td>{{ hasil.kirim_ke_pm|yesno:"Ya,Tidak" }}</td>
+          <td>{{ hasil.tanggal_uji|date:"d M Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" style="text-align: center;">Belum ada data uji.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 
   <script>
     function toggleNavbar() {
       const nav = document.getElementById("navbar");
       const icon = document.getElementById("toggle-icon");
-      const collapsed = nav.classList.contains("collapsed");
-      nav.classList.toggle("collapsed", !collapsed);
-      nav.classList.toggle("expanded", collapsed);
-      icon.innerText = collapsed ? "▲" : "▼";
+      const isCollapsed = nav.classList.contains("collapsed");
+      nav.classList.toggle("collapsed", !isCollapsed);
+      nav.classList.toggle("expanded", isCollapsed);
+      icon.innerText = isCollapsed ? "▲" : "▼";
     }
   </script>
 

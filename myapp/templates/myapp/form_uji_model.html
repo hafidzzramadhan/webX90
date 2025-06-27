@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Uji Model</title>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f9f9f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      position: relative;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+    }
+
+    label {
+      margin-top: 15px;
+      display: block;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      padding: 10px;
+    }
+
+    input[type="checkbox"] {
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .dekor-kiri-atas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 25vw;
+      z-index: 0;
+    }
+
+    .dekor-kanan-bawah {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 25vw;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <img src="{% static 'myapp/m1k.png' %}" class="dekor-kiri-atas" />
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekor-kanan-bawah" />
+
+  <div class="form-container">
+    <h2>Uji Model</h2>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <label for="hasil">Hasil Perhitungan</label>
+      <textarea name="hasil_perhitungan" required></textarea>
+
+      <label for="rekomendasi">Rekomendasi</label>
+      <textarea name="rekomendasi" required></textarea>
+
+      <label>
+        <input type="checkbox" name="kirim_ke_pm" />
+        Kirim ke Project Management
+      </label>
+
+      <button type="submit">Simpan Hasil Uji</button>
+    </form>
+  </div>
+</body>
+</html>

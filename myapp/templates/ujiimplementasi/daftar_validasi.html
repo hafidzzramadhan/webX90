@@ -153,12 +153,14 @@
     <nav id="navbar" class="collapsed">
       <ul>
         <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-        <li><a href="{% url 'log' %}">Log</a></li>
+        <li><a href="{% url 'log' %}" class="active">Log</a></li>
         <li><a href="{% url 'activity' %}">Activity</a></li>
         <li><a href="{% url 'catatan' %}">Catatan</a></li>
-        <li><a href="{% url 'transaksi' %}">Transaksi</a></li>
+        <li><a href="{% url 'transaksi_model' %}">Transaksi</a></li>
         <li><a href="{% url 'lingkungan' %}">Lingkungan</a></li>
-        <li><a href="{% url 'daftar_model_tervalidasi' %}" class="active">Uji Implementasi</a></li>
+        <li><a href="{% url 'daftar_model_tervalidasi' %}">Uji Implementasi</a></li>
+        <li><a href="{% url 'riwayat_uji' %}">📋 Riwayat Uji</a></li>
+
         <li><a href="#">Setting</a></li>
       </ul>
     </nav>
@@ -171,25 +173,28 @@
 
     <table>
       <thead>
-        <tr>
-          <th>Nama Model</th>
-          <th>Validator</th>
-          <th>Status Validasi</th>
-          <th>Tanggal</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in data_list %}
-        <tr>
-          <td>{{ item.model_terkait.nama_model }}</td>
-          <td>{{ item.validator }}</td>
-          <td>{{ item.status_validasi }}</td>
-          <td>{{ item.tanggal_validasi|date:"Y-m-d H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="4">Belum ada data validasi.</td></tr>
-        {% endfor %}
-      </tbody>
+  <tr>
+    <th>Nama Model</th>
+    <th>Validator</th>
+    <th>Status Validasi</th>
+    <th>Tanggal</th>
+    <th>Aksi</th>
+  </tr>
+</thead>
+<tbody>
+  {% for item in data_list %}
+  <tr>
+    <td>{{ item.model_terkait.nama_model }}</td>
+    <td>{{ item.validator }}</td>
+    <td>{{ item.status_validasi }}</td>
+    <td>{{ item.tanggal_validasi|date:"Y-m-d H:i" }}</td>
+    <td><a href="{% url 'uji_model' item.id %}">Uji</a></td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="5">Belum ada data validasi.</td></tr>
+  {% endfor %}
+</tbody>
+
     </table>
   </div>
 

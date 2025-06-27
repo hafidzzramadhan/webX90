@@ -1,5 +1,17 @@
 from django.db import models
 
+
+
+class Catatan(models.Model):
+    model_terkait = models.ForeignKey('SystemImplementation', on_delete=models.CASCADE, null=True, blank=True)
+    tanggal = models.DateField(auto_now_add=True)
+    judul = models.CharField(max_length=255)
+    deskripsi = models.TextField()
+    teknisi = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.judul} - {self.tanggal}"
+    
 class Aktivitas(models.Model):
     tanggal = models.DateField()
     nama_aktivitas = models.CharField(max_length=255)
@@ -8,14 +20,6 @@ class Aktivitas(models.Model):
     def __str__(self):
         return f"{self.nama_aktivitas} - {self.status}"
 
-class Catatan(models.Model):
-    tanggal = models.DateField()
-    judul = models.CharField(max_length=255)
-    deskripsi = models.TextField()
-    teknisi = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"{self.judul} - {self.teknisi}"
 
 class Transaksi(models.Model):
     model = models.CharField(max_length=100)
@@ -70,3 +74,31 @@ class ValidasiModel(models.Model):
 
     def __str__(self):
         return f"Validasi untuk {self.model_terkait.nama_model} oleh {self.validator}"
+
+class HasilUjiModel(models.Model):
+    model_terkait = models.ForeignKey(ValidasiModel, on_delete=models.CASCADE)
+    hasil_perhitungan = models.TextField()
+    rekomendasi = models.TextField()
+    kirim_ke_pm = models.BooleanField(default=False)
+    tanggal_uji = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Hasil uji untuk {self.model_terkait}"
+
+
+class Transaksi(models.Model):
+    nama_transaksi = models.CharField(max_length=100)
+    deskripsi = models.TextField()
+    waktu = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nama_transaksi
+
+class TransaksiModel(models.Model):
+    waktu_transaksi = models.DateTimeField(auto_now_add=True)
+    nama_model = models.CharField(max_length=200)
+    input_data = models.TextField()
+    output_data = models.TextField()
+
+    def __str__(self):
+        return f"{self.nama_model} - {self.waktu_transaksi}"

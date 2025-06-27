@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Validasi Model</title>
+  <title>Form Validasi Model</title>
   <style>
     * {
       box-sizing: border-box;
@@ -34,7 +34,14 @@
 
     h2 {
       text-align: center;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      text-align: center;
+      font-weight: normal;
       margin-bottom: 20px;
+      color: #666;
     }
 
     label {
@@ -50,6 +57,10 @@
       margin-bottom: 15px;
     }
 
+    textarea {
+      min-height: 100px;
+    }
+
     button {
       width: 100%;
       padding: 12px;
@@ -63,6 +74,19 @@
 
     button:hover {
       background-color: #218838;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #555;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
     }
 
     .dekor-kiri-atas {
@@ -90,11 +114,13 @@
 
   <div class="form-container">
     <h2>Validasi Model</h2>
+    <h3>Silakan isi hasil validasi model Anda</h3>
     <form method="POST">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit">Simpan Validasi</button>
     </form>
+    <a href="{% url 'log' %}" class="back-link">← Kembali ke Log Aktivitas</a>
   </div>
 
 </body>

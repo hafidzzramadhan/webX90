@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ringkasan Uji Model</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 40px;
+      position: relative;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 14px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .back-button {
+      margin-top: 30px;
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+
+    .back-button:hover {
+      background-color: #0056b3;
+    }
+
+    .dekor-kiri-atas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20vw;
+      z-index: -1;
+    }
+
+    .dekor-kanan-bawah {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 25vw;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dekorasi -->
+  <img src="{% static 'myapp/m1k.png' %}" class="dekor-kiri-atas" alt="Dekorasi Kiri Atas">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekor-kanan-bawah" alt="Dekorasi Kanan Bawah">
+
+  <h2>Ringkasan Hasil Uji Model</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Validator</th>
+        <th>Hasil Perhitungan</th>
+        <th>Rekomendasi</th>
+        <th>Kirim ke PM?</th>
+        <th>Tanggal Uji</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hasil_uji in hasil_list %}
+      <tr>
+        <td>{{ hasil_uji.model_terkait }}</td>
+        <td>{{ hasil_uji.model_terkait.validator }}</td>
+        <td>{{ hasil_uji.hasil_perhitungan }}</td>
+        <td>{{ hasil_uji.rekomendasi }}</td>
+        <td>{{ hasil_uji.kirim_ke_pm|yesno:"Ya,Tidak" }}</td>
+        <td>{{ hasil_uji.tanggal_uji }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">Belum ada data hasil uji.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{% url 'daftar_model_tervalidasi' %}" class="back-button">← Kembali ke Daftar Model</a>
+
+</body>
+</html>

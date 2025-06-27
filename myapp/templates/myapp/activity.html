@@ -5,12 +5,7 @@
   <meta charset="UTF-8">
   <title>Activity</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
       background-color: #fff;
@@ -27,13 +22,8 @@
       opacity: 0.9;
     }
 
-    .dekorasi-kiri {
-      left: 0;
-    }
-
-    .dekorasi-kanan {
-      right: 0;
-    }
+    .dekorasi-kiri { left: 0; }
+    .dekorasi-kanan { right: 0; }
 
     .navbar-wrapper {
       position: relative;
@@ -44,7 +34,6 @@
       max-width: 90%;
       margin: 0 auto;
       padding-top: 35px;
-      transition: all 0.4s ease;
     }
 
     .navbar-toggle {
@@ -61,8 +50,6 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      z-index: 10;
     }
 
     nav {
@@ -70,15 +57,8 @@
       transition: all 0.4s ease;
     }
 
-    nav.collapsed {
-      max-height: 0;
-      opacity: 0;
-    }
-
-    nav.expanded {
-      max-height: 500px;
-      opacity: 1;
-    }
+    nav.collapsed { max-height: 0; opacity: 0; }
+    nav.expanded { max-height: 500px; opacity: 1; }
 
     nav ul {
       display: flex;
@@ -95,108 +75,83 @@
       font-weight: 500;
       padding: 8px 14px;
       border-radius: 10px;
-      transition: background-color 0.3s ease;
     }
 
     nav ul li a.active,
     nav ul li a:hover {
       background-color: #333;
-    } 
+    }
 
     .activity-container {
-      max-width: 900px;
-      margin: 40px auto;
+      padding: 30px;
+    }
+
+    .card {
+      background-color: #fffbea;
       padding: 20px;
-      max-height: 70vh;
-      overflow-y: auto;
-      border: 1px solid #eee;
-      border-radius: 10px;
+      margin: 20px 0;
+      border-radius: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .card h3 {
+      margin-bottom: 8px;
+      font-size: 20px;
     }
 
-    th, td {
-      padding: 12px 18px;
-      border-bottom: 1px solid #ccc;
-      text-align: left;
+    .card p {
+      margin: 6px 0;
     }
 
-    th {
-      background-color: #f2f2f2;
-    }
-
-    .status-circle {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      margin-left: 8px;
-    }
-
-    tr:hover {
-      background-color: #f9f9f9;
-      cursor: pointer;
+    .label {
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <!-- Dekorasi -->
   <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
   <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
 
-  <!-- Navbar -->
   <header class="navbar-wrapper">
     <div class="navbar-toggle" onclick="toggleNavbar()">
       <span id="toggle-icon">▼</span>
     </div>
     <nav id="navbar" class="collapsed">
-  <ul>
-    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-    <li><a href="{% url 'log' %}">Log</a></li>
-    <li><a href="{% url 'activity' %}">Activity</a></li>
-    <li><a href="{% url 'catatan' %}">Catatan</a></li>
-    <li><a href="{% url 'transaksi' %}">Transaksi</a></li>
-    <li><a href="{% url 'lingkungan' %}" class="{% if request.path == '/lingkungan/' %}active{% endif %}">Lingkungan</a></li>
-    <li><a href="#">Setting</a></li>
-  </ul>
-</nav>
+      <ul>
+        <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'log' %}">Log</a></li>
+        <li><a href="{% url 'activity' %}" class="active">Activity</a></li>
+        <li><a href="{% url 'catatan' %}">Catatan</a></li>
+        <li><a href="{% url 'transaksi_model' %}">Transaksi</a></li>
+        <li><a href="{% url 'lingkungan' %}">Lingkungan</a></li>
+        <li><a href="{% url 'daftar_model_tervalidasi' %}">Uji Implementasi</a></li>
+        <li><a href="{% url 'riwayat_uji' %}">📋 Riwayat Uji</a></li>
+      </ul>
+    </nav>
   </header>
 
-  <!-- Activity Table -->
   <div class="activity-container">
-    <h2>Daftar Aktivitas</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Tanggal</th>
-          <th>Nama Aktivitas</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for a in aktivitas %}
-        <tr onclick="location.href='{% url 'activity_detail' a.id %}'">
-          <td>{{ a.tanggal }}</td>
-          <td>{{ a.nama_aktivitas }}</td>
-          <td>{{ a.status }} <span class="status-circle" style="background-color: {{ a.warna }};"></span></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <h2>📌 Daftar Aktivitas</h2>
+    {% for a in aktivitas_list %}
+      <div class="card">
+        <h3>{{ a.nama_aktivitas }}</h3>
+        <p><span class="label">Tanggal:</span> {{ a.tanggal }}</p>
+        <p><span class="label">Status:</span> {{ a.status }}</p>
+      </div>
+    {% empty %}
+      <p>Belum ada aktivitas yang tercatat.</p>
+    {% endfor %}
   </div>
 
   <script>
     function toggleNavbar() {
       const nav = document.getElementById("navbar");
       const icon = document.getElementById("toggle-icon");
-      const isCollapsed = nav.classList.contains("collapsed");
-      nav.classList.toggle("collapsed", !isCollapsed);
-      nav.classList.toggle("expanded", isCollapsed);
-      icon.innerText = isCollapsed ? "▲" : "▼";
+      const collapsed = nav.classList.contains("collapsed");
+      nav.classList.toggle("collapsed", !collapsed);
+      nav.classList.toggle("expanded", collapsed);
+      icon.innerText = collapsed ? "▲" : "▼";
     }
   </script>
 

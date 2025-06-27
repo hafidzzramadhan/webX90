@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Dashboard</title>
+  <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
   <style>
+    /* Style dasar dari referensimu */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -19,24 +21,17 @@
       overflow-x: hidden;
     }
 
-    /* ==== Dekorasi bawah kiri-kanan ==== */
     .dekorasi-kiri, .dekorasi-kanan {
       position: fixed;
       bottom: 0;
-      width: 260px; /* ✅ Lebih besar dari sebelumnya */
+      width: 260px;
       z-index: -1;
       opacity: 0.9;
     }
 
-    .dekorasi-kiri {
-      left: 0;
-    }
+    .dekorasi-kiri { left: 0; }
+    .dekorasi-kanan { right: 0; }
 
-    .dekorasi-kanan {
-      right: 0;
-    }
-
-    /* ==== Navbar Wrapper ==== */
     .navbar-wrapper {
       position: relative;
       background-color: black;
@@ -45,14 +40,12 @@
       width: fit-content;
       max-width: 90%;
       margin: 0 auto;
-      padding-top: 35px; /* ✅ beri lebih ruang buat panah */
-      transition: all 0.4s ease;
+      padding-top: 35px;
     }
 
-    /* ==== Tombol Panah ==== */
     .navbar-toggle {
       position: absolute;
-      top: -12px; /* ✅ sedikit lebih turun dari sebelumnya */
+      top: -12px;
       left: 50%;
       transform: translateX(-50%);
       background-color: black;
@@ -64,25 +57,15 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      z-index: 10;
     }
 
-    /* ==== Navbar ==== */
     nav {
       overflow: hidden;
       transition: all 0.4s ease;
     }
 
-    nav.collapsed {
-      max-height: 0;
-      opacity: 0;
-    }
-
-    nav.expanded {
-      max-height: 500px;
-      opacity: 1;
-    }
+    nav.collapsed { max-height: 0; opacity: 0; }
+    nav.expanded { max-height: 500px; opacity: 1; }
 
     nav ul {
       display: flex;
@@ -102,12 +85,10 @@
       transition: background-color 0.3s ease;
     }
 
-    nav ul li a.active,
-    nav ul li a:hover {
+    nav ul li a.active, nav ul li a:hover {
       background-color: #333;
     }
 
-    /* ==== Konten Dashboard ==== */
     .dashboard-container {
       padding: 30px;
     }
@@ -138,9 +119,10 @@
 </head>
 <body>
 
-  <!-- Dekorasi kiri dan kanan bawah -->
-  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekorasi kiri bawah">
-  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekorasi kanan bawah">
+  <!-- Dekorasi kiri-kanan -->
+  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekorasi kiri">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekorasi kanan">
+
 
   <!-- Navbar -->
   <header class="navbar-wrapper">
@@ -149,21 +131,21 @@
     </div>
 
     <nav id="navbar" class="collapsed">
-  <ul>
-    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-    <li><a href="{% url 'log' %}">Log</a></li>
-    <li><a href="{% url 'activity' %}">Activity</a></li>
-    <li><a href="{% url 'catatan' %}">Catatan</a></li>
-    <li><a href="{% url 'transaksi' %}">Transaksi</a></li>
-    <li><a href="{% url 'lingkungan' %}" class="{% if request.path == '/lingkungan/' %}active{% endif %}">Lingkungan</a></li>
-    <li><a href="#">Setting</a></li>
-  </ul>
-</nav>
-
-
+      <ul>
+        <li><a href="{% url 'dashboard' %}" class="active">Dashboard</a></li>
+        <li><a href="{% url 'log' %}">Log</a></li>
+        <li><a href="{% url 'activity' %}">Activity</a></li>
+        <li><a href="{% url 'catatan' %}">Catatan</a></li>
+        <li><a href="{% url 'transaksi_model' %}">Transaksi</a></li>
+        <li><a href="{% url 'lingkungan' %}">Lingkungan</a></li>
+        <li><a href="{% url 'daftar_model_tervalidasi' %}">Uji Implementasi</a></li>
+        <li><a href="{% url 'riwayat_uji' %}">📋 Riwayat Uji</a></li>
+        <li><a href="#">Setting</a></li>
+      </ul>
+    </nav>
   </header>
 
-  <!-- Konten -->
+  <!-- Konten Dashboard -->
   <div class="dashboard-container">
     <div class="card">
       <h2>Progres Implementasi</h2>
@@ -195,10 +177,8 @@
       const nav = document.getElementById("navbar");
       const icon = document.getElementById("toggle-icon");
       const isCollapsed = nav.classList.contains("collapsed");
-
       nav.classList.toggle("collapsed", !isCollapsed);
       nav.classList.toggle("expanded", isCollapsed);
-
       icon.innerText = isCollapsed ? "▲" : "▼";
     }
   </script>
