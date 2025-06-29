@@ -10,7 +10,7 @@ from .views import (
     activity_view, transaksi_model_view, signup_view,
     logactivity_view, daftar_catatan, lingkungan_view,
     hapus_aktivitas_detail, #transaksi_detail_view,
-    terima_model_api,validasi_model,daftar_model_tervalidasi,ringkasan_hasil_uji,riwayat_uji_view,
+    terima_model_api,validasi_model,daftar_model_tervalidasi,ringkasan_hasil_uji,riwayat_uji_view,tambah_lingkungan
 )
 
 urlpatterns = [
@@ -72,6 +72,8 @@ urlpatterns = [
    path('', views.landing_view, name='landing'),
    path('tambah-model/', views.tambah_model_baru, name='submit_model_form'),
    path('transaksi-model/', views.transaksi_model_view, name='transaksi_model'),
+   path('lingkungan/', views.lingkungan_view, name='lingkungan'),
+   path('lingkungan/tambah/', tambah_lingkungan, name='tambah_lingkungan'),
 
    
    

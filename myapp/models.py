@@ -56,12 +56,14 @@ class ManagementsSI(models.Model):
 
 
 class Lingkungan(models.Model):
+    model_terkait = models.ForeignKey('SystemImplementation', on_delete=models.SET_NULL, null=True, blank=True)
     nama = models.CharField(max_length=100)
     deskripsi = models.TextField()
     tanggal_diperbarui = models.DateField()
 
     def __str__(self):
-        return self.nama
+        return f"{self.nama} - {self.model_terkait.nama_model if self.model_terkait else 'Umum'}"
+
 
 class SystemImplementation(models.Model):
     no = models.IntegerField()

@@ -208,9 +208,41 @@ def transaksi_model_view(request):
     return render(request, 'myapp/transaksi_model.html', {'transaksi_list': transaksi_list})
 
 
+from datetime import date
+from .models import Lingkungan, SystemImplementation, Aktivitas
+
 def lingkungan_view(request):
-    lingkungan = Lingkungan.objects.all()
-    return render(request, 'myapp/lingkungan.html', {'lingkungan': lingkungan})
+    if request.method == 'POST':
+        model_id = request.POST.get('model_terkait')
+        nama = request.POST.get('nama')
+        deskripsi = request.POST.get('deskripsi')
+        tanggal = request.POST.get('tanggal_diperbarui')
+
+        model_obj = SystemImplementation.objects.get(id=model_id) if model_id else None
+
+        Lingkungan.objects.create(
+            model_terkait=model_obj,
+            nama=nama,
+            deskripsi=deskripsi,
+            tanggal_diperbarui=tanggal
+        )
+
+        # ✅ Tambahkan ke daftar aktivitas
+        Aktivitas.objects.create(
+            tanggal=date.today(),
+            nama_aktivitas=f"Komponen lingkungan '{nama}' ditambahkan",
+            status="Hijau"
+        )
+
+        return redirect('lingkungan')
+
+    lingkungan_list = Lingkungan.objects.all().order_by('-tanggal_diperbarui')
+    model_list = SystemImplementation.objects.all()
+    return render(request, 'myapp/lingkungan.html', {
+        'lingkungan_list': lingkungan_list,
+        'model_list': model_list
+    })
+
 
 def logactivity_view(request):
 
@@ -612,3 +644,33 @@ def hapus_catatan(request, id):
     catatan = get_object_or_404(Catatan, id=id)
     catatan.delete()
     return redirect('catatan')
+
+def tambah_lingkungan(request):
+    if request.method == 'POST':
+        model_id = request.POST.get('model_terkait')
+        nama = request.POST.get('nama')
+        deskripsi = request.POST.get('deskripsi')
+        tanggal = request.POST.get('tanggal_diperbarui')
+
+        model_obj = SystemImplementation.objects.get(id=model_id) if model_id else None
+
+        Lingkungan.objects.create(
+            model_terkait=model_obj,
+            nama=nama,
+            deskripsi=deskripsi,
+            tanggal_diperbarui=tanggal
+        )
+
+        # Catat ke aktivitas
+        Aktivitas.objects.create(
+            tanggal=date.today(),
+            nama_aktivitas=f"Komponen lingkungan '{nama}' ditambahkan",
+            status="Hijau"
+        )
+
+        return redirect('lingkungan')
+
+    model_list = SystemImplementation.objects.all()
+    return render(request, 'myapp/tambah_lingkungan.html', {
+        'model_list': model_list
+    })

@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tambah Komponen Lingkungan</title>
+  <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      text-decoration: none;
+      color: #007bff;
+    }
+
+    .dekorasi-kiri, .dekorasi-kanan {
+      position: fixed;
+      bottom: 0;
+      width: 260px;
+      z-index: -1;
+      opacity: 0.9;
+    }
+
+    .dekorasi-kiri { left: 0; }
+    .dekorasi-kanan { right: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Dekorasi -->
+  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
+
+  <div class="form-container">
+    <h2>🛠️ Tambah Komponen Lingkungan</h2>
+    <form method="POST">
+      {% csrf_token %}
+
+      <label for="model_terkait">Model Terkait:</label>
+      <select name="model_terkait" required>
+        <option value="">-- Pilih Model --</option>
+        {% for model in model_list %}
+          <option value="{{ model.id }}">{{ model.nama_model }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="nama">Nama Komponen:</label>
+      <input type="text" name="nama" required>
+
+      <label for="deskripsi">Deskripsi Kondisi:</label>
+      <textarea name="deskripsi" rows="4" required></textarea>
+
+      <label for="tanggal_diperbarui">Tanggal Diperbarui:</label>
+      <input type="date" name="tanggal_diperbarui" required>
+
+      <button type="submit">Simpan Komponen</button>
+      <a href="{% url 'lingkungan' %}" class="back-link">← Kembali ke Daftar</a>
+    </form>
+  </div>
+
+</body>
+</html>
