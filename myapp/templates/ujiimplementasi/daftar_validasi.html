@@ -188,7 +188,7 @@
     <td>{{ item.validator }}</td>
     <td>{{ item.status_validasi }}</td>
     <td>{{ item.tanggal_validasi|date:"Y-m-d H:i" }}</td>
-    <td><a href="{% url 'uji_model' item.id %}">Uji</a></td>
+    <td><a href="{% url 'kirim_managements_ke_teman' %}">Uji</a></td>
   </tr>
   {% empty %}
   <tr><td colspan="5">Belum ada data validasi.</td></tr>

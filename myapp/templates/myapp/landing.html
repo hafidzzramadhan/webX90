@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistem Implementation - Landing</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 90%;
+      max-width: 1200px;
+      gap: 50px;
+      z-index: 1;
+    }
+
+    .landing-box {
+      flex: 1;
+      max-width: 600px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background-color: #fff;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+      margin: 12px 0;
+      text-align: justify;
+    }
+
+    ul {
+      margin-left: 20px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .start-button {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      text-decoration: none;
+    }
+
+    .right-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .right-image img {
+      max-width: 300px;
+      width: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .dekor-atas {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 22vw;
+      z-index: 0;
+    }
+
+    .dekor-bawah {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 25vw;
+      z-index: 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      .right-image img {
+        max-width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dekorasi -->
+  <img src="{% static 'myapp/X91.png' %}" class="dekor-atas" alt="Dekorasi Atas">
+  <img src="{% static 'myapp/X90.png' %}" class="dekor-bawah" alt="Dekorasi Bawah">
+
+  <div class="container">
+    <div class="landing-box">
+      <h1>Sistem<br>Implementation</h1>
+      <p>
+        Aplikasi ini digunakan untuk mengelola implementasi dan pemeliharaan perangkat lunak.
+        Adapun kemampuan aplikasi ini sebagai berikut:
+      </p>
+      <ul>
+        <li>Merekam aktivitas implementasi perangkat lunak</li>
+        <li>Merekam data transaksi model baik fitur input maupun label output</li>
+        <li>Merekam data lingkungan yang relevan dengan konteks implementasi perangkat lunak</li>
+        <li>Merekam masukan/catatan dari pemelihara perangkat lunak</li>
+        <li>Memantau kinerja perangkat lunak terpasang</li>
+      </ul>
+      <a href="{% url 'login' %}" class="start-button">Login</a>
+    </div>
+
+    <div class="right-image">
+      <img src="{% static 'myapp/logo.png' %}" alt="Logo">
+    </div>
+  </div>
+
+</body>
+</html>

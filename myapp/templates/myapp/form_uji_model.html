@@ -1,95 +1,53 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <meta charset="utf-8">
-  <title>Uji Model</title>
-  <style>
-    body {
-      font-family: Arial;
-      background-color: #f9f9f9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      position: relative;
-    }
-
-    .form-container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-      z-index: 2;
-    }
-
-    label {
-      margin-top: 15px;
-      display: block;
-    }
-
-    textarea {
-      width: 100%;
-      height: 80px;
-      padding: 10px;
-    }
-
-    input[type="checkbox"] {
-      margin-top: 10px;
-    }
-
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .dekor-kiri-atas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 25vw;
-      z-index: 0;
-    }
-
-    .dekor-kanan-bawah {
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      width: 25vw;
-      z-index: 0;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Kirim Proyek ke Teman</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-  <img src="{% static 'myapp/m1k.png' %}" class="dekor-kiri-atas" />
-  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekor-kanan-bawah" />
+<body class="bg-gray-100 min-h-screen flex items-center justify-center relative">
 
-  <div class="form-container">
-    <h2>Uji Model</h2>
+  <!-- Ornamen Dekoratif -->
+  <img src="{% static 'myapp/m1k.png' %}" class="absolute top-0 left-0 w-1/4 opacity-80 z-0">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="absolute bottom-0 right-0 w-1/4 opacity-80 z-0">
 
+  <!-- Form Container -->
+  <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg z-10">
     <form method="POST">
       {% csrf_token %}
+      <h2 class="text-xl font-semibold mb-5 text-center text-gray-800">Kirim Proyek ke Teman</h2>
 
-      <label for="hasil">Hasil Perhitungan</label>
-      <textarea name="hasil_perhitungan" required></textarea>
+      <!-- Nama Kelompok -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kelompok</label>
+        <input type="text" name="namaKelompok" value="Sistem Implementasi" readonly
+               class="w-full border rounded px-3 py-1.5 bg-gray-100 text-gray-600 text-sm cursor-not-allowed">
+      </div>
 
-      <label for="rekomendasi">Rekomendasi</label>
-      <textarea name="rekomendasi" required></textarea>
+      <!-- Deskripsi -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+        <textarea name="deskripsi" rows="4" required
+                  class="w-full border rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+{{ deskripsi|default:'' }}</textarea>
+      </div>
 
-      <label>
-        <input type="checkbox" name="kirim_ke_pm" />
-        Kirim ke Project Management
-      </label>
+      <!-- Status -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+        <select name="status" required
+                class="w-full border rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="">-- Pilih Status --</option>
+          <option value="belum selesai">Belum Selesai</option>
+          <option value="selesai">Selesai</option>
+        </select>
+      </div>
 
-      <button type="submit">Simpan Hasil Uji</button>
+      <button type="submit"
+              class="w-full bg-blue-600 text-white text-sm font-semibold py-1.5 rounded hover:bg-blue-700 transition duration-200">
+        Kirim ke Teman
+      </button>
     </form>
   </div>
 </body>

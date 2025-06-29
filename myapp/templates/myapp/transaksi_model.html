@@ -3,9 +3,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Transaksi Model</title>
+  <title>Riwayat Transaksi Model</title>
+  <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
       background-color: #fff;
@@ -34,6 +34,7 @@
       max-width: 90%;
       margin: 0 auto;
       padding-top: 35px;
+      transition: all 0.4s ease;
     }
 
     .navbar-toggle {
@@ -50,6 +51,8 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 10;
     }
 
     nav {
@@ -57,8 +60,15 @@
       transition: all 0.4s ease;
     }
 
-    nav.collapsed { max-height: 0; opacity: 0; }
-    nav.expanded { max-height: 500px; opacity: 1; }
+    nav.collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    nav.expanded {
+      max-height: 500px;
+      opacity: 1;
+    }
 
     nav ul {
       display: flex;
@@ -75,6 +85,7 @@
       font-weight: 500;
       padding: 8px 14px;
       border-radius: 10px;
+      transition: background-color 0.3s ease;
     }
 
     nav ul li a.active,
@@ -82,38 +93,61 @@
       background-color: #333;
     }
 
-    .transaksi-container {
-      padding: 30px;
+    h2 {
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 20px;
     }
 
-    .card {
-      background-color: #f5f5f5;
+    .log-container {
+      max-width: 1000px;
+      margin: 0 auto;
       padding: 20px;
-      margin: 20px 0;
-      border-radius: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border: 1px solid #eee;
+      border-radius: 10px;
+      background-color: #fafafa;
+      max-height: 70vh;
+      overflow-y: auto;
     }
 
-    .card h3 {
-      margin-bottom: 10px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    .card p {
-      margin: 4px 0;
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
     }
 
-    .highlight {
-      background-color: #e9f7ef;
-      padding: 8px;
-      border-left: 4px solid green;
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .button {
+      background-color: #007bff;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
 
-  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Kiri">
-  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Kanan">
+  <!-- Dekorasi -->
+  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
 
+  <!-- Navbar -->
   <header class="navbar-wrapper">
     <div class="navbar-toggle" onclick="toggleNavbar()">
       <span id="toggle-icon">▼</span>
@@ -132,31 +166,45 @@
     </nav>
   </header>
 
-  <div class="transaksi-container">
-    <h2>📄 Riwayat Transaksi Model</h2>
-    {% for trx in transaksi_list %}
-      <div class="card">
-        <h3>Model: {{ trx.model_terkait.model_terkait.nama_model }}</h3>
-        <p><strong>Executor:</strong> {{ trx.executor }}</p>
-        <p><strong>Waktu:</strong> {{ trx.waktu_transaksi }}</p>
-        <p><strong>Input Fitur:</strong></p>
-        <div class="highlight">{{ trx.input_fitur }}</div>
-        <p><strong>Output Model:</strong></p>
-        <div class="highlight">{{ trx.output_model }}</div>
-      </div>
-    {% empty %}
-      <p>Belum ada transaksi model yang tercatat.</p>
-    {% endfor %}
+  <h2>📦 Riwayat Transaksi Model</h2>
+
+  <div class="log-container">
+    <a href="{% url 'dashboard' %}" class="button">⬅️ Kembali ke Dashboard</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nama Model</th>
+          <th>Input Data</th>
+          <th>Output Data</th>
+          <th>Waktu Transaksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for trans in transaksi_list %}
+        <tr>
+          <td>{{ trans.nama_model }}</td>
+          <td>{{ trans.input_data|default:"-" }}</td>
+          <td>{{ trans.output_data|default:"-" }}</td>
+          <td>{{ trans.waktu_transaksi|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">Belum ada transaksi model.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 
   <script>
     function toggleNavbar() {
       const nav = document.getElementById("navbar");
       const icon = document.getElementById("toggle-icon");
-      const collapsed = nav.classList.contains("collapsed");
-      nav.classList.toggle("collapsed", !collapsed);
-      nav.classList.toggle("expanded", collapsed);
-      icon.innerText = collapsed ? "▲" : "▼";
+      const isCollapsed = nav.classList.contains("collapsed");
+      nav.classList.toggle("collapsed", !isCollapsed);
+      nav.classList.toggle("expanded", isCollapsed);
+      icon.innerText = isCollapsed ? "▲" : "▼";
     }
   </script>
 

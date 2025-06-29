@@ -7,16 +7,16 @@
   <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       font-family: Arial, sans-serif;
       background-color: #fff;
-      min-height: 100vh;
       position: relative;
+      min-height: 100vh;
       overflow-x: hidden;
     }
 
@@ -40,6 +40,7 @@
       max-width: 90%;
       margin: 0 auto;
       padding-top: 35px;
+      transition: all 0.4s ease;
     }
 
     .navbar-toggle {
@@ -56,6 +57,8 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 10;
     }
 
     nav {
@@ -63,8 +66,15 @@
       transition: all 0.4s ease;
     }
 
-    nav.collapsed { max-height: 0; opacity: 0; }
-    nav.expanded { max-height: 500px; opacity: 1; }
+    nav.collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    nav.expanded {
+      max-height: 500px;
+      opacity: 1;
+    }
 
     nav ul {
       display: flex;
@@ -84,30 +94,41 @@
       transition: background-color 0.3s ease;
     }
 
-    nav ul li a.active, nav ul li a:hover {
+    nav ul li a.active,
+    nav ul li a:hover {
       background-color: #333;
     }
 
-    .catatan-container {
-      padding: 30px;
+    .container {
+      padding: 30px 20px;
+      max-width: 1000px;
+      margin: auto;
     }
 
-    .card {
-      background-color: #f9f9f9;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-bottom: 20px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 10px;
     }
 
     th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
+      padding: 12px;
+      border: 1px solid #ccc;
       text-align: left;
     }
 
@@ -115,60 +136,26 @@
       background-color: #f2f2f2;
     }
 
-    .btn-add {
-      background-color: #007bff;
+    .btn-merah {
+      background-color: #dc3545;
       color: white;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
+      padding: 6px 12px;
+      border-radius: 5px;
       text-decoration: none;
-      margin-bottom: 20px;
-      display: inline-block;
-    }
-
-    .form-container {
-      margin-top: 30px;
-      padding: 20px;
-      background-color: #eef6ff;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .form-container input,
-    .form-container textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    .form-container button {
-      background-color: #28a745;
-      color: white;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .form-container button:hover {
-      background-color: #218838;
     }
   </style>
 </head>
 <body>
 
   <!-- Dekorasi -->
-  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekorasi kiri">
-  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekorasi kanan">
+  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
 
   <!-- Navbar -->
   <header class="navbar-wrapper">
     <div class="navbar-toggle" onclick="toggleNavbar()">
       <span id="toggle-icon">▼</span>
     </div>
-
     <nav id="navbar" class="collapsed">
       <ul>
         <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
@@ -179,51 +166,45 @@
         <li><a href="{% url 'lingkungan' %}">Lingkungan</a></li>
         <li><a href="{% url 'daftar_model_tervalidasi' %}">Uji Implementasi</a></li>
         <li><a href="{% url 'riwayat_uji' %}">📋 Riwayat Uji</a></li>
-        <li><a href="#">Setting</a></li>
       </ul>
     </nav>
   </header>
 
   <!-- Konten -->
-  <div class="catatan-container">
-    <h2>Catatan Pemeliharaan</h2>
+  <div class="container">
+    <h2>📒 Daftar Catatan Pemeliharaan</h2>
+    <a href="{% url 'tambah_catatan' %}" class="button">+ Tambah Catatan</a>
 
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>Judul</th>
-            <th>Deskripsi</th>
-            <th>Teknisi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for catatan in catatan %}
-          <tr>
-            <td>{{ catatan.tanggal }}</td>
-            <td>{{ catatan.judul }}</td>
-            <td>{{ catatan.deskripsi }}</td>
-            <td>{{ catatan.teknisi }}</td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="4">Belum ada catatan.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Form Tambah Catatan -->
-    <div class="form-container" id="form-catatan">
-      <h3>Tambah Catatan Baru</h3>
-      <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="judul" placeholder="Judul" required>
-        <textarea name="deskripsi" placeholder="Deskripsi" rows="3" required></textarea>
-        <input type="text" name="teknisi" placeholder="Teknisi" required>
-        <button type="submit">💾 Simpan Catatan</button>
-      </form>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Judul</th>
+          <th>Deskripsi</th>
+          <th>Teknisi</th>
+          <th>Model Terkait</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for catatan in catatan_list %}
+        <tr>
+          <td>{{ catatan.tanggal }}</td>
+          <td>{{ catatan.judul }}</td>
+          <td>{{ catatan.deskripsi }}</td>
+          <td>{{ catatan.teknisi }}</td>
+          <td>{{ catatan.model_terkait.nama_model|default:"-" }}</td>
+          <td>
+            <a href="{% url 'hapus_catatan' catatan.id %}" class="btn-merah" onclick="return confirm('Yakin ingin menghapus catatan ini?')">Hapus</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">Belum ada catatan.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 
   <script>

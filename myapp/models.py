@@ -13,9 +13,14 @@ class Catatan(models.Model):
         return f"{self.judul} - {self.tanggal}"
     
 class Aktivitas(models.Model):
+    STATUS_CHOICES = [
+        ('Hijau', 'Hijau'),
+        ('Oranye', 'Oranye'),
+        ('Merah', 'Merah'),
+    ]
     tanggal = models.DateField()
     nama_aktivitas = models.CharField(max_length=255)
-    status = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
 
     def __str__(self):
         return f"{self.nama_aktivitas} - {self.status}"
@@ -39,6 +44,15 @@ class LogAktivitas(models.Model):
 
     def __str__(self):
         return f"{self.aktivitas} - {self.status}"
+    
+#ke ridho
+class ManagementsSI(models.Model):
+    namaKelompok = models.TextField()
+    deskripsi = models.TextField()
+    status = models.TextField()
+
+    def __str__(self):
+        return f"{self.namaKelompok} - {self.status}"
 
 
 class Lingkungan(models.Model):
@@ -54,16 +68,28 @@ class SystemImplementation(models.Model):
     nama_model = models.CharField(max_length=100, default="default_model")
     status_project = models.CharField(max_length=50)
     
-    # Dulu: final_model = models.CharField(max_length=100)
-    dokumentasi_model = models.URLField(help_text="Link ke Google Colab")
+    # Dulu: final_model = models.CharField(max_length=100) buat bisa link 
+
+    dokumentasi_model = models.URLField(
+    help_text="Link ke dokumentasi model", 
+    blank=True, 
+    null=True
+)
 
     # Dulu: dokumentasi_link = models.URLField()
     laporan_model = models.FileField(upload_to='laporan/', null=True, blank=True, help_text="Upload PDF laporan model")
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    #TESTERR
+    input_model = models.TextField(blank=True, null=True)
+    output_model = models.TextField(blank=True, null=True)
+
+
     def _str_(self):
         return f"{self.nama_model} - {self.status_project}"
+    
+
     
 class ValidasiModel(models.Model):
     model_terkait = models.ForeignKey(SystemImplementation, on_delete=models.CASCADE)

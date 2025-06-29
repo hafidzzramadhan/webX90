@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tambah Catatan</title>
+  <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .dekorasi-kiri, .dekorasi-kanan {
+      position: fixed;
+      bottom: 0;
+      width: 260px;
+      z-index: -1;
+      opacity: 0.9;
+    }
+
+    .dekorasi-kiri {
+      left: 0;
+    }
+
+    .dekorasi-kanan {
+      right: 0;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 12px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-top: 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .back-link {
+      margin-left: 15px;
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
+  <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
+
+  <div class="form-container">
+    <h2>🛠️ Tambah Catatan Pemeliharaan</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <label for="judul">Judul Catatan:</label>
+      <input type="text" name="judul" required>
+
+      <label for="deskripsi">Deskripsi:</label>
+      <textarea name="deskripsi" required></textarea>
+
+      <label for="teknisi">Nama Teknisi:</label>
+      <input type="text" name="teknisi" required>
+
+      <label for="model_terkait">Model Terkait:</label>
+      <select name="model_terkait">
+        <option value="">-- Pilih Model --</option>
+        {% for model in models %}
+          <option value="{{ model.id }}">{{ model.nama_model }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit">Simpan</button>
+      <a href="{% url 'catatan' %}" class="back-link">Kembali</a>
+    </form>
+  </div>
+
+</body>
+</html>
