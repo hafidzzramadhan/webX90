@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kirim Management</title>
+</head>
+<body>
+    <h2>Kirim Data Management</h2>
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <label>Deskripsi:</label><br>
+        <input type="text" name="deskripsi" value="{{ deskripsi }}"><br><br>
+        
+        <label>Status:</label><br>
+        <select name="status">
+            <option value="">-- Pilih --</option>
+            <option value="belum selesai">Belum Selesai</option>
+            <option value="selesai">Selesai</option>
+        </select><br><br>
+
+        <button type="submit">Kirim</button>
+    </form>
+</body>
+</html>
+

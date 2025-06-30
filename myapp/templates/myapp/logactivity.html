@@ -160,10 +160,8 @@
     }
 
   </style>
-</head>
-<body>
 
-  <!-- Dekorasi -->
+<!-- Dekorasi -->
   <img src="{% static 'myapp/dekorkiri.png' %}" class="dekorasi-kiri" alt="Dekor kiri">
   <img src="{% static 'myapp/dekorkanan.png' %}" class="dekorasi-kanan" alt="Dekor kanan">
 
@@ -186,13 +184,26 @@
     </nav>
   </header>
 
-  <!-- Log Table -->
+  <!-- Kontainer Utama -->
   <div class="log-container">
+
+    <!-- Header dan Tombol -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
       <h2>📑 Log Aktivitas Model</h2>
       <a href="{% url 'submit_model_form' %}" class="button">+ Tambah Model Baru</a>
     </div>
 
+    <!-- Filter -->
+    <form method="get" style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+      <label for="status">🔍 Filter Status:</label>
+      <select name="status" id="status" onchange="this.form.submit()" style="padding: 6px 10px;">
+        <option value="">-- Semua --</option>
+        <option value="Belum Diuji" {% if selected_status == 'Belum Diuji' %}selected{% endif %}>Belum Diuji</option>
+        <option value="Tervalidasi" {% if selected_status == 'Tervalidasi' %}selected{% endif %}>Tervalidasi</option>
+      </select>
+    </form>
+
+    <!-- Tabel -->
     <table>
       <thead>
         <tr>
@@ -205,37 +216,36 @@
         </tr>
       </thead>
       <tbody>
-  {% for item in data_list %}
-  <tr>
-    <td>{{ item.nama_model }}</td>
-    <td>{{ item.status_project }}</td>
-    <td>
-  {% if item.dokumentasi_model %}
-    <a href="{{ item.dokumentasi_model }}" target="_blank">Lihat Link</a>
-  {% else %}
-    Tidak ada
-  {% endif %}
-</td>
-
-    <td>
-      {% if item.laporan_model %}
-        <a href="{{ item.laporan_model.url }}" target="_blank">Lihat PDF</a>
-      {% else %}
-        Tidak ada
-      {% endif %}
-    </td>
-    <td>{{ item.timestamp|date:"Y-m-d H:i" }}</td>
-   <td style="display: flex; flex-direction: column; gap: 5px;">
-  <a href="{% url 'validasi_model' item.id %}" class="btn-hijau">Validasi</a>
-  <a href="{% url 'hapus_model' item.id %}" class="btn-merah" onclick="return confirm('Yakin ingin menghapus model ini?')">Hapus</a>
-</td>
-
-
-  </tr>
-  {% endfor %}
-</tbody>
-
-     
+        {% for item in data_list %}
+        <tr>
+          <td>{{ item.nama_model }}</td>
+          <td>{{ item.status_project }}</td>
+          <td>
+            {% if item.dokumentasi_model %}
+              <a href="{{ item.dokumentasi_model }}" target="_blank">Lihat Link</a>
+            {% else %}
+              Tidak ada
+            {% endif %}
+          </td>
+          <td>
+            {% if item.laporan_model %}
+              <a href="{{ item.laporan_model.url }}" target="_blank">Lihat PDF</a>
+            {% else %}
+              Tidak ada
+            {% endif %}
+          </td>
+          <td>{{ item.timestamp|date:"Y-m-d H:i" }}</td>
+          <td style="display: flex; flex-direction: column; gap: 5px;">
+            <a href="{% url 'validasi_model' item.id %}" class="btn-hijau">Validasi</a>
+            <a href="{% url 'hapus_model' item.id %}" class="btn-merah" onclick="return confirm('Yakin ingin menghapus model ini?')">Hapus</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 20px;">Tidak ada data yang ditemukan.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
   </div>
 

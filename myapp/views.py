@@ -31,6 +31,11 @@ from .serializers import (
     AktivitasSerializer, CatatanSerializer, TransaksiSerializer,
     LogAktivitasSerializer, LingkunganSerializer, SystemImplementationSerializer
 )
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
+from rest_framework.authtoken.models import Token
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 @csrf_exempt
@@ -51,19 +56,27 @@ def catatan_pemeliharaan_view(request):
     return render(request, 'myapp/catatan.html', {'daftar_catatan': daftar_catatan})
 # Auth Views
 
+
+@csrf_exempt
 def login_view(request):
     if request.method == 'POST':
-        identifier = request.POST.get('username')
-        password = request.POST.get('password')
-        user = User.objects.filter(username=identifier).first() or User.objects.filter(email=identifier).first()
-        if user:
-            auth_user = authenticate(request, username=user.username, password=password)
-            if auth_user:
-                login(request, auth_user)
-                return redirect('dashboard')
-        return render(request, 'myapp/login.html', {'error': 'Login gagal. Cek kembali username/email dan password.'})
-    return render(request, 'myapp/login.html')
+        data = json.loads(request.body.decode('utf-8'))
+        username = data.get('username')
+        password = data.get('password')
 
+        user = authenticate(username=username, password=password)
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            return JsonResponse({
+                'success': True,
+                'token': token.key,
+                'username': user.username,
+                'email': user.email,
+            })
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid credentials'}, status=401)
+
+    return JsonResponse({'error': 'Only POST allowed'}, status=405)
 
 def ringkasan_hasil_uji(request):
     from .models import HasilUjiModel
@@ -245,10 +258,24 @@ def lingkungan_view(request):
 
 
 def logactivity_view(request):
+    status_filter = request.GET.get('status')
 
-    data = SystemImplementation.objects.all().order_by('-timestamp')
+    if status_filter:
+        data = SystemImplementation.objects.filter(status_project=status_filter).order_by('-timestamp')
+    else:
+        data = SystemImplementation.objects.all().order_by('-timestamp')
 
-    return render(request, 'myapp/logactivity.html', {'data_list': data})
+    return render(request, 'myapp/logactivity.html', {
+        'data_list': data,
+        'selected_status': status_filter  # kirim ke template
+    })
+
+
+# def logactivity_view(request):
+
+#     data = SystemImplementation.objects.all().order_by('-timestamp')
+
+#     return render(request, 'myapp/logactivity.html', {'data_list': data})
 
 @csrf_exempt  #PALSUU
 def submit_model_form(request):
@@ -258,6 +285,7 @@ def submit_model_form(request):
         status_project = request.POST.get('status_project')
         dokumentasi = request.POST.get('dokumentasi')
         laporan_file = request.FILES.get('laporan')
+        sumber="IC"
 
         # Simpan laporan jika ada
         laporan_url = None
@@ -273,7 +301,8 @@ def submit_model_form(request):
             nama_model=nama_model,
             status_project=status_project,
             dokumentasi_model=dokumentasi,
-            laporan_model=laporan_file  # akan otomatis tersimpan
+            laporan_model=laporan_file,
+            sumber = "IC"# akan otomatis tersimpan
         )
 
         # Simpan ke LogAktivitas
@@ -316,6 +345,8 @@ def terima_model_api(request):
             "status_project": data.get("status_project"),
             "dokumentasi_model": data.get("dokumentasi_model"),
             "laporan_model": file_laporan,
+            
+            
         }
 
         serializer = SystemImplementationSerializer(data=payload)
@@ -493,6 +524,20 @@ def validasi_model(request, id):
     return render(request, 'myapp/validasi_model.html', {'form': form})
 
 
+#PERBARUANN
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import SystemImplementation  # atau model kamu
+from .serializers import SystemImplementationSerializer
+
+@api_view(['GET','POST'])
+def get_model_dari_ic(request):
+    queryset = SystemImplementation.objects.all().order_by('-timestamp')  # Tanpa filter sumber
+    serializer = SystemImplementationSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+
+
 def daftar_model_tervalidasi(request):
     data_list = ValidasiModel.objects.filter(status_validasi="Valid").order_by('-tanggal_validasi')
     return render(request, 'ujiimplementasi/daftar_validasi.html', {'data_list': data_list})
@@ -502,7 +547,113 @@ def riwayat_uji_view(request):
     return render(request, 'myapp/riwayat_uji.html', {'hasil_list': hasil_list})
 
 
-#ke RIDHO
+# #ke RIDHO
+# import json
+# def kirim_managements_ke_teman(request):
+#     if request.method == 'POST':
+#         deskripsi = request.POST.get('deskripsi')
+#         status = request.POST.get('status')
+
+#         if not all([deskripsi, status]):
+#             return render(request, 'myapp/kirimManagemen_form.html', {
+#                 'error': 'Semua data wajib diisi.',
+#                 'deskripsi': deskripsi,
+#             })
+
+#         if status not in ['belum selesai', 'selesai']:
+#             return render(request, 'myapp/kirimManagemen_form.html', {
+#                 'error': 'Status harus \"belum selesai\" atau \"selesai\".',
+#                 'deskripsi': deskripsi,
+#             })
+
+#         instance = ManagementsSI.objects.create(
+#             deskripsi=deskripsi,
+#             status=status
+#         )
+
+#         data = {
+#             'namaKelompok': "Sistem Implementasi",
+#             'deskripsi': deskripsi,
+#             'status': status,
+#         }
+
+#         try:
+#             print("Data yang dikirim:", json.dumps(data))
+#             response = requests.post(
+#                 'http://10.24.72.33:8000/api/terima-managementsSI/',
+#                 data=json.dumps(data),
+#                 headers={'Content-Type': 'application/json'}
+#             )
+#             print("Kirim berhasil:", response.status_code)
+#             print("RESPON TEXT:", response.text)
+
+#             if response.status_code == 201:
+#                 messages.success(request, "Proyek berhasil dikirim ke teman.")
+#             else:
+#                 messages.warning(request, f"Gagal kirim. Respon: {response.status_code} - {response.text}")
+
+#         except Exception as e:
+#             print("Gagal kirim:", e)
+#             messages.error(request, f"Gagal kirim proyek: {e}")
+
+#         return redirect('/ujiimplementasi/')
+
+#     return render(request, 'myapp/form_uji_model.html')  # ✅ INI YANG BENAR
+
+# import json
+# def kirim_managements_ke_teman(request):
+#     if request.method == 'POST':
+#         deskripsi = request.POST.get('deskripsi')
+#         status = request.POST.get('status')
+
+#         if not all([deskripsi, status]):
+#             return render(request, 'myapp/kirimManagemen_form.html', {
+#                 'error': 'Semua data wajib diisi.',
+#                 'deskripsi': deskripsi,
+#             })
+
+#         if status not in ['belum selesai', 'selesai']:
+#             return render(request, 'myapp/kirimManagemen_form.html', {
+#                 'error': 'Status harus \"belum selesai\" atau \"selesai\".',
+#                 'deskripsi': deskripsi,
+#             })
+        
+
+#         instance = ManagementsSI.objects.create(
+#             deskripsi=deskripsi,
+#             status=status
+#         )
+
+
+#         data = {
+#             'namaKelompok': "Sistem Implementasi",
+#             'deskripsi': deskripsi,
+#             'status': status,
+#         }
+
+#         try:
+#             print("Data yang dikirim:", json.dumps(data))
+#             response = requests.post(
+#                 'http://10.40.36.114/api/terima-managementsSI/',
+#                 data=json.dumps(data),
+#                 headers={'Content-Type': 'application/json'}
+#             )
+#             print("Kirim berhasil:", response.status_code)
+#             print("RESPON TEXT:", response.text)
+
+#             if response.status_code == 201:
+#                 messages.success(request, "Proyek berhasil dikirim ke teman.")
+#             else:
+#                 messages.warning(request, f"Gagal kirim. Respon: {response.status_code} - {response.text}")
+
+#         except Exception as e:
+#             print("Gagal kirim:", e)
+#             messages.error(request, f"Gagal kirim proyek: {e}")
+
+#         return redirect('/ujiimplementasi/')
+
+#     return render(request, 'myapp/form_uji_model.html')  # ✅ INI YANG BENAR
+
 import json
 def kirim_managements_ke_teman(request):
     if request.method == 'POST':
@@ -510,21 +661,23 @@ def kirim_managements_ke_teman(request):
         status = request.POST.get('status')
 
         if not all([deskripsi, status]):
-            return render(request, 'myapp/kirimManagemen_form.html', {
+            return render(request, 'myapp/form_uji_model.html', {
                 'error': 'Semua data wajib diisi.',
                 'deskripsi': deskripsi,
             })
 
         if status not in ['belum selesai', 'selesai']:
-            return render(request, 'myapp/kirimManagemen_form.html', {
+            return render(request, 'myapp/form_uji_model.html', {
                 'error': 'Status harus \"belum selesai\" atau \"selesai\".',
                 'deskripsi': deskripsi,
             })
+        
 
         instance = ManagementsSI.objects.create(
             deskripsi=deskripsi,
             status=status
         )
+
 
         data = {
             'namaKelompok': "Sistem Implementasi",
@@ -535,7 +688,7 @@ def kirim_managements_ke_teman(request):
         try:
             print("Data yang dikirim:", json.dumps(data))
             response = requests.post(
-                'http://10.24.80.60:8000/api/terima-managementsSI/',
+                'http://10.40.36.114:8000/api/terima-managementsSI/',
                 data=json.dumps(data),
                 headers={'Content-Type': 'application/json'}
             )
@@ -553,11 +706,10 @@ def kirim_managements_ke_teman(request):
 
         return redirect('/ujiimplementasi/')
 
-    return render(request, 'myapp/form_uji_model.html')  # ✅ INI YANG BENAR
+    return render(request, 'myapp/form_uji_model.html')
 
 
 
-    
 def hapus_model(request, id):
     obj = get_object_or_404(SystemImplementation, id=id)
     nama = obj.nama_model
@@ -674,3 +826,24 @@ def tambah_lingkungan(request):
     return render(request, 'myapp/tambah_lingkungan.html', {
         'model_list': model_list
     })
+
+#XXXXXXXXXXXXXXXXXXX
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import LogAktivitas
+from .serializers import LogAktivitasSerializer
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_log_activity(request):
+    log_items = LogAktivitas.objects.all().order_by('-tanggal')
+    serializer = LogAktivitasSerializer(log_items, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_semua_model(request):
+    
+    queryset = SystemImplementation.objects.all().order_by('-timestamp')
+    serializer = SystemImplementationSerializer(queryset, many=True)
+    return Response(serializer.data)

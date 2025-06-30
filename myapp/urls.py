@@ -10,7 +10,7 @@ from .views import (
     activity_view, transaksi_model_view, signup_view,
     logactivity_view, daftar_catatan, lingkungan_view,
     hapus_aktivitas_detail, #transaksi_detail_view,
-    terima_model_api,validasi_model,daftar_model_tervalidasi,ringkasan_hasil_uji,riwayat_uji_view,tambah_lingkungan
+    terima_model_api,validasi_model,daftar_model_tervalidasi,ringkasan_hasil_uji,riwayat_uji_view,tambah_lingkungan,get_model_dari_ic
 )
 
 urlpatterns = [
@@ -47,6 +47,10 @@ urlpatterns = [
     # API
     path('api/system-implementation/', SystemImplementationAPIView.as_view(), name='system_implementation_api'),
     path('api/terima-model/', terima_model_api, name='terima_model_api'),
+    path('api/model-dari-ic/', get_model_dari_ic, name='model_dari_ic'),
+    path('api/logactivity/', views.get_log_activity, name='logactivity'),
+    path('api/get-model-dari-ic/', get_model_dari_ic, name='get_model_dari_ic'),
+    path('api/get-model-dari-ic/', get_model_dari_ic),
     
 
     # Reset Password
@@ -74,6 +78,7 @@ urlpatterns = [
    path('transaksi-model/', views.transaksi_model_view, name='transaksi_model'),
    path('lingkungan/', views.lingkungan_view, name='lingkungan'),
    path('lingkungan/tambah/', tambah_lingkungan, name='tambah_lingkungan'),
+   
 
    
    

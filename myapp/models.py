@@ -69,6 +69,8 @@ class SystemImplementation(models.Model):
     no = models.IntegerField()
     nama_model = models.CharField(max_length=100, default="default_model")
     status_project = models.CharField(max_length=50)
+    sumber = models.CharField(max_length=50, default="SI")  # ⬅️ Tambahan ini WAJIB
+
     
     # Dulu: final_model = models.CharField(max_length=100) buat bisa link 
 
